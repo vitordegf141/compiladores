@@ -1,0 +1,139 @@
+
+begin
+
+end
+#encontrou KW_CARA 256#encontrou SIMBOLO 280 simbolo : c#encontrou caracter especial 61 caracter : = 
+'#encontrou SIMBOLO 280 simbolo : x'#encontrou caracter especial 59 caracter : ; 
+#encontrou KW_CARA 256#encontrou SIMBOLO 280 simbolo : d#encontrou caracter especial 61 caracter : = 
+#encontrou LIT_INTEIRO 285 literal : 100#encontrou caracter especial 59 caracter : ; 
+#encontrou KW_INTE 257#encontrou SIMBOLO 280 simbolo : a.#encontrou LIT_INTEIRO 285 literal : 5#encontrou caracter especial 61 caracter : = 
+'A'#encontrou caracter especial 59 caracter : ; 
+#encontrou KW_INTE 257#encontrou SIMBOLO 280 simbolo : i#encontrou caracter especial 61 caracter : = 
+#encontrou LIT_INTEIRO 285 literal : 1#encontrou caracter especial 59 caracter : ; 
+#encontrou KW_INTE 257#encontrou SIMBOLO 280 simbolo : v#encontrou caracter especial 91 caracter : [ 
+#encontrou LIT_INTEIRO 285 literal : 10#encontrou caracter especial 93 caracter : ] 
+'#encontrou SIMBOLO 280 simbolo : a'#encontrou LIT_INTEIRO 285 literal : 0#encontrou LIT_INTEIRO 285 literal : 0#encontrou LIT_INTEIRO 285 literal : 0#encontrou LIT_INTEIRO 285 literal : 0#encontrou LIT_INTEIRO 285 literal : 0#encontrou LIT_INTEIRO 285 literal : 0#encontrou LIT_INTEIRO 285 literal : 0#encontrou LIT_INTEIRO 285 literal : 0#encontrou LIT_INTEIRO 285 literal : 0#encontrou caracter especial 59 caracter : ; 
+#encontrou KW_INTE 257#encontrou SIMBOLO 280 simbolo : matrix#encontrou caracter especial 91 caracter : [ 
+#encontrou LIT_INTEIRO 285 literal : 100#encontrou caracter especial 93 caracter : ] 
+#encontrou caracter especial 59 caracter : ; 
+#encontrou KW_REAL 258#encontrou SIMBOLO 280 simbolo : f#encontrou caracter especial 61 caracter : = 
+#encontrou LIT_FLOAT 282 literal : 2.5#encontrou caracter especial 59 caracter : ; 
+
+achou nova linha, contagem de linhas = 10 numero da linha = 11
+Este eh um comentario 
+achou nova linha, contagem de linhas = 11 numero da linha = 12
+de multiplas 
+achou nova linha, contagem de linhas = 12 numero da linha = 13
+linhas
+achou nova linha, contagem de linhas = 13 numero da linha = 14
+\\\
+achou nova linha, contagem de linhas = 14 numero da linha = 15
+
+achou nova linha, contagem de linhas = 15 numero da linha = 16
+inte main ()
+achou nova linha, contagem de linhas = 16 numero da linha = 17
+  {
+achou nova linha, contagem de linhas = 17 numero da linha = 18
+  a.5 = 0;
+achou nova linha, contagem de linhas = 18 numero da linha = 19
+  a = a - i;
+achou nova linha, contagem de linhas = 19 numero da linha = 20
+  a = 5;
+achou nova linha, contagem de linhas = 20 numero da linha = 21
+  v[a] = 55;
+achou nova linha, contagem de linhas = 21 numero da linha = 22
+  escreva v[5];
+achou nova linha, contagem de linhas = 22 numero da linha = 23
+  escreva a;
+achou nova linha, contagem de linhas = 23 numero da linha = 24
+  i = 2;
+achou nova linha, contagem de linhas = 24 numero da linha = 25
+
+achou nova linha, contagem de linhas = 25 numero da linha = 26
+  escreva "Digite um numero: \n";
+achou nova linha, contagem de linhas = 26 numero da linha = 27
+  a = entrada;
+achou nova linha, contagem de linhas = 27 numero da linha = 28
+  escreva "Digite mais um numero: \n";
+achou nova linha, contagem de linhas = 28 numero da linha = 29
+
+achou nova linha, contagem de linhas = 29 numero da linha = 30
+    {
+achou nova linha, contagem de linhas = 30 numero da linha = 31
+    i = incn(i ;
+achou nova linha, contagem de linhas = 31 numero da linha = 32
+    a = incn(a ;
+achou nova linha, contagem de linhas = 32 numero da linha = 33
+    } enquanto (i<1;
+achou nova linha, contagem de linhas = 33 numero da linha = 34
+
+achou nova linha, contagem de linhas = 34 numero da linha = 35
+  escreva "Incrementado algumas vezes a fica " (2+a "\n";
+achou nova linha, contagem de linhas = 35 numero da linha = 36
+
+achou nova linha, contagem de linhas = 36 numero da linha = 37
+  entaum,
+achou nova linha, contagem de linhas = 37 numero da linha = 38
+    {
+achou nova linha, contagem de linhas = 38 numero da linha = 39
+    a = a + 1;
+achou nova linha, contagem de linhas = 39 numero da linha = 40
+    escreva "A era=15\n";
+achou nova linha, contagem de linhas = 40 numero da linha = 41
+    } se (a==1; 
+achou nova linha, contagem de linhas = 41 numero da linha = 42
+    
+achou nova linha, contagem de linhas = 42 numero da linha = 43
+  entaum,
+achou nova linha, contagem de linhas = 43 numero da linha = 44
+    {
+achou nova linha, contagem de linhas = 44 numero da linha = 45
+    escreva "Nao tem como isso...\n"
+achou nova linha, contagem de linhas = 45 numero da linha = 46
+    }
+achou nova linha, contagem de linhas = 46 numero da linha = 47
+  senaum,
+achou nova linha, contagem de linhas = 47 numero da linha = 48
+    escreva "OK!\n" se (i==10; 
+achou nova linha, contagem de linhas = 48 numero da linha = 49
+  {{}}
+achou nova linha, contagem de linhas = 49 numero da linha = 50
+  }
+achou nova linha, contagem de linhas = 50 numero da linha = 51
+
+achou nova linha, contagem de linhas = 51 numero da linha = 52
+inte incn (inte x, inte n
+achou nova linha, contagem de linhas = 52 numero da linha = 53
+  {
+achou nova linha, contagem de linhas = 53 numero da linha = 54
+  retorne x + n
+achou nova linha, contagem de linhas = 54 numero da linha = 55
+  }
+achou nova linha, contagem de linhas = 55 numero da linha = 56
+
+achou nova linha, contagem de linhas = 56 numero da linha = 57
+// fim de arquivo
+achou nova linha, contagem de linhas = 57 numero da linha = 58
+
+achou nova linha, contagem de linhas = 58 numero da linha = 59
+cara
+achou nova linha, contagem de linhas = 59 numero da linha = 60
+
+begin
+
+	48	0	2
+	49	1	2
+	53	5	2
+	97	10	2
+	99	c	1
+	100	d	1
+	102	f	1
+	105	i	1
+	118	v	1
+	120	x	1
+	143	a.	1
+	145	100	2
+	149	2.5	2
+	661	matrix	1
+end
+line counting : 59

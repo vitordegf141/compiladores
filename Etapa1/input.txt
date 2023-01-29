@@ -1,0 +1,27 @@
+cara
+inte
+se
+senaum
+entaum
+==
+>=
+;
+!=
+{
+()
+}
+////
+ cara
+ entaum
+ senaum
+\\\\
+identificante.entaum_dead
+identificante.entaum_dead
+abacaxi
+cerveja
+cara quente = "ca\\chorentaumadas"
+cara quente = "asdas\""
+cara feio = '\"'
+inte kkk = 123
+inte se.12 = 123.12
+%%%
