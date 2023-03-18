@@ -19,7 +19,7 @@ identificante.entaum_dead
 identificante.entaum_dead
 abacaxi
 cerveja
-cara quente = "ca\\chorentaumadas"
+cara quente = "cachorentaumadas"
 cara quente = "asdas\""
 cara feio = '\"'
 inte kkk = 123

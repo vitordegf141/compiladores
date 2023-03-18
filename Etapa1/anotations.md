@@ -4,4 +4,6 @@ dfjlrjkzpcbknomi
 tar cvzf etapa1.tgz .
 ]
 
-"\n"                                                        
+"\n"    
+
+if (charlenght == 1) {insert_simbol(&chartemp,LIT_CHAR); yytext = &chartemp; return LIT_CHAR;} else{ return TOKEN_ERROR;} 

@@ -3,23 +3,21 @@
 %{
 #include "tokens.h"
 #include <string.h>
+#include "hash.h"
 
 int line_count =0;
 int line_number =1;
 int running = 1;
-
-
+int charlenght=0;
+char chartemp ='a';
+char *temp_string;
+char temp_string_lenght;
+char temp_max_string_lenght;
 #define TABLE_SIZE 997
 #define EH_IDENTIFICADOR 1
 #define EH_LITERAL 2
-typedef struct simbol
-{
-    char *name;
-    int appearences;
-    int type;
-    struct simbol *next;
-}simbol;
-simbol * hashtable[TABLE_SIZE];
+
+
 void initMe(void)
 {
     //*hashtable = ( simbol *) malloc(sizeof( simbol)*TABLE_SIZE);
@@ -29,119 +27,54 @@ void initMe(void)
         hashtable[i]=NULL;
     }
 }   
+
 int isRunning()
 {
     return running;
 }
-unsigned long hash(char *name)
-{
-    unsigned long sum =0;
-    for (int j=0;name[j]!='\0';j++)
-    {
-        sum += name[j];
-    }
-    return sum % TABLE_SIZE;
+
+#define incrimental_string_lenght 10
+
+char* append_temp_string(char new_text){
+    temp_string[temp_string_lenght-1]=new_text;
+    temp_string[temp_string_lenght]='\0';
 }
 
-int next_has_simbol(simbol *simbol_root,char *name, int type)
-{
-    if(simbol_root == NULL)
-        return 0;
-    else{
-         if(strcmp(simbol_root->name,name) == 0)
-            return 1;
-        else
-        {
-            return next_has_simbol(simbol_root->next,name,type);
-        }
+int reset_temp_string()
+    {
+        temp_string = malloc(sizeof(char)*incrimental_string_lenght);
+        temp_max_string_lenght =incrimental_string_lenght;
+        temp_string[0]='\0';
+        temp_string_lenght =1;
     }
-}
-int has_simbol(char *name,int type){
-    unsigned long computed_hash = hash(name);
-    if(hashtable[computed_hash] != NULL){
-        if(strcmp(hashtable[computed_hash]->name,name) == 0)
-            return 1;
-        else 
-            return next_has_simbol(hashtable[computed_hash],name,type);
+
+int insert_char_into_temp_string(char text)
+{
+    //printf("%c ",text);
+    if(temp_max_string_lenght==0)
+    {
+        temp_string = malloc(sizeof(char)*incrimental_string_lenght);
+        temp_max_string_lenght =incrimental_string_lenght;
+        append_temp_string(text);
+        temp_string_lenght =2;
+
+    }
+    else if(temp_string_lenght + 1 >temp_max_string_lenght)
+    {
+        temp_max_string_lenght+=incrimental_string_lenght;
+        temp_string = realloc(temp_string, sizeof(char)*temp_max_string_lenght);
+        append_temp_string(text);
+        temp_string_lenght++;
     }
     else
     {
-        return 0;
+        append_temp_string(text);
+        temp_string_lenght++;
     }
+    //printf("temp_string = %s",temp_string);
+    //getchar();
 }
 
- simbol *create_simbol(char *simbol_name, int type)
-{
-    if(simbol_name == NULL)
-        return NULL;
-     simbol *new = malloc(sizeof( simbol));
-    int i,namesize;
-    namesize = strlen(simbol_name);
-    new->name = malloc(sizeof(char)*(namesize+1));
-    strcpy(new->name,simbol_name);
-    new->appearences=1;
-    new->next=NULL;
-    new->type=type;
-    return new;
-}
-
-void insert_in_next( simbol *simbol_root,char *new_simbol, int type){
-    if(simbol_root == NULL || new_simbol == NULL)
-        return;
-    else{
-        if(strcmp(simbol_root->name,new_simbol) == 0)
-        {
-            simbol_root->appearences++;
-        }
-        else
-        {
-            if(simbol_root->next == NULL)
-            {
-                simbol_root->next = create_simbol(new_simbol,type);
-            }
-            else
-            {
-                insert_in_next(simbol_root->next,new_simbol,type);
-            }
-        }
-    }
-}
-
-void print_hashtable()
-{
-    int i;
-    printf("\nbegin\n");
-    for(i=0;i<TABLE_SIZE;i++)
-    {
-        if(hashtable[i]!=NULL)
-            printf("\n\t%d\t%s\t%d",i,hashtable[i]->name,hashtable[i]->type);
-    }
-    printf("\nend\n");
-}
-
-int insert_simbol(char *name, int type){
-    if(name == NULL)
-        return 0;
-    unsigned long computed_hash = hash(name);
-    if(hashtable[computed_hash] != NULL){
-        if(strcmp(hashtable[computed_hash]->name,name) == 0)
-        {
-            hashtable[computed_hash]->appearences;
-            return 1;
-        }
-        else{
-            insert_in_next(hashtable[computed_hash],name,type);
-            return 1;
-        }
-    }
-    else
-    {
-        simbol *new_simbol=create_simbol(name,type);
-        hashtable[computed_hash]=new_simbol;
-        return 1;
-    }
-    
-}
 int getLineNumber()
 {
     return line_number;
@@ -158,6 +91,9 @@ void stringnewline(char *literal){
 %}
 %x COMMENT_MULTIPLE
 %x COMMENT_SIMPLE
+%x READ_CHAR
+%x READ_STRING
+%x READ_ESCAPE
 %%
 
 ;|\(|\)|\[|\]|\{|\}|\=|\+|\-|\*|\/|\<|\>|\&|\||\~           {return (int)yytext[0];}
@@ -175,27 +111,51 @@ retorne                                                     {return KW_RETORNE;}
 \>\=                                                      {return OPERATOR_GE;}
 \<\=                                                      {return OPERATOR_LE;}
 \!\=                                                      {return OPERATOR_DIF;}
-"\n"                                                     {line_count++;line_number++;}
-"\"(\\\"|.)*\""                                              {insert_simbol(yytext,EH_LITERAL);return LIT_STRING;}
-"\'(.)\'"                                                {insert_simbol(yytext,EH_LITERAL);return LIT_CHAR;}
+[\n]                                                    {line_count++;line_number++;return '\n';}
+"\""                                              {reset_temp_string();BEGIN READ_STRING;}
+"'"                                             {charlenght = 0;BEGIN READ_CHAR;}
 [0-9]+                                                  {insert_simbol(yytext,EH_LITERAL);return LIT_INTEIRO;}
 [0-9]+\.[0-9]+                                                {insert_simbol(yytext,EH_LITERAL);return LIT_FLOAT;}
 \/\/                                                    {BEGIN COMMENT_SIMPLE;}
 \/\/\/                                                       {BEGIN COMMENT_MULTIPLE;}
-[a-z]+[a-z\.\_\-]*                                          {insert_simbol(yytext,EH_IDENTIFICADOR);return  TK_IDENTIFIER;}
-[ \t\r]+                                                   {}
+[a-z]+[a-z\.\_\-1-9]*                                          {insert_simbol(yytext,EH_IDENTIFICADOR);return  TK_IDENTIFIER;}
+[ \t\r,]+                                                   {}
 "[^A-z'0-9 ;\(\)\[\]\{\}\=\+\-\*\/\<\>\&\\~!\",.\n]"                                                    {return TOKEN_ERROR;}
-<COMMENT_MULTIPLE>[^\(\\\\\\\\|[\n]\)]* {}
+<COMMENT_MULTIPLE>. {}
 <COMMENT_MULTIPLE>[\n]  {line_count++;line_number++; return '\n';}
-<COMMENT_MULTIPLE>\\\\\\\\ {BEGIN 0;}
+<COMMENT_MULTIPLE>"\\"{3} {BEGIN 0;}
 
 <COMMENT_SIMPLE>.* {}
-<COMMENT_SIMPLE>"\n" {BEGIN 0;}
+<COMMENT_SIMPLE>"\n" {line_count++;line_number++;BEGIN 0;}
+
+
+
+
+<READ_CHAR>"'" {if (charlenght == 1) {insert_simbol(&chartemp,LIT_CHAR); yytext = &chartemp; BEGIN 0;return LIT_CHAR;} else{ return TOKEN_ERROR;} }
+<READ_CHAR>. {chartemp = yytext[0];charlenght++;}
+
+<READ_STRING>"\"" {insert_simbol(temp_string,LIT_STRING);BEGIN 0;return LIT_STRING;}
+<READ_STRING>"\\" {printf("begin escape");BEGIN READ_ESCAPE;}
+<READ_STRING>. {insert_char_into_temp_string(yytext[0]);}
+
+<READ_ESCAPE>"a" {insert_char_into_temp_string('\a');BEGIN READ_STRING;}
+<READ_ESCAPE>"b" {insert_char_into_temp_string('\b');BEGIN READ_STRING;}
+<READ_ESCAPE>"e" {insert_char_into_temp_string('\e');BEGIN READ_STRING;}
+<READ_ESCAPE>"f" {insert_char_into_temp_string('\f');BEGIN READ_STRING;}
+<READ_ESCAPE>"n" {insert_char_into_temp_string('\n');BEGIN READ_STRING;}
+<READ_ESCAPE>"r" {insert_char_into_temp_string('\r');BEGIN READ_STRING;}
+<READ_ESCAPE>"t" {insert_char_into_temp_string('\t');BEGIN READ_STRING;}
+<READ_ESCAPE>"v" {insert_char_into_temp_string('\v');BEGIN READ_STRING;}
+<READ_ESCAPE>"\\" {insert_char_into_temp_string('\\');BEGIN READ_STRING;}
+<READ_ESCAPE>"\'" {insert_char_into_temp_string('\'');BEGIN READ_STRING;}
+<READ_ESCAPE>"\"" {insert_char_into_temp_string('\"');BEGIN READ_STRING;}
+<READ_ESCAPE>"?" {insert_char_into_temp_string('\?');BEGIN READ_STRING;}
+<READ_ESCAPE>. {return TOKEN_ERROR;}
 %%
 
 
 #include "main.c"
-
+#include "hash.c"
 
 
 int yywrap()

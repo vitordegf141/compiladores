@@ -24,7 +24,7 @@ inte main ()
   escreva a;
   i = 2;
 
-  escreva "Digite um numero: \n";
+  escreva "Digite um numero: \n" test;
   a = entrada;
   escreva "Digite mais um numero: \n";
 
