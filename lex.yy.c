@@ -1008,7 +1008,7 @@ case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
 #line 114 "scanner.l"
-{line_count++;line_number++;return '\n';}
+{line_count++;line_number++;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
@@ -1065,7 +1065,7 @@ case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
 #line 125 "scanner.l"
-{line_count++;line_number++; return '\n';}
+{line_count++;line_number++;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
@@ -1101,7 +1101,7 @@ YY_RULE_SETUP
 case 34:
 YY_RULE_SETUP
 #line 138 "scanner.l"
-{printf("begin escape");BEGIN READ_ESCAPE;}
+{BEGIN READ_ESCAPE;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP

@@ -111,7 +111,7 @@ retorne                                                     {return KW_RETORNE;}
 \>\=                                                      {return OPERATOR_GE;}
 \<\=                                                      {return OPERATOR_LE;}
 \!\=                                                      {return OPERATOR_DIF;}
-[\n]                                                    {line_count++;line_number++;return '\n';}
+[\n]                                                    {line_count++;line_number++;}
 "\""                                              {reset_temp_string();BEGIN READ_STRING;}
 "'"                                             {charlenght = 0;BEGIN READ_CHAR;}
 [0-9]+                                                  {insert_simbol(yytext,EH_LITERAL);return LIT_INTEIRO;}
@@ -122,7 +122,7 @@ retorne                                                     {return KW_RETORNE;}
 [ \t\r,]+                                                   {}
 "[^A-z'0-9 ;\(\)\[\]\{\}\=\+\-\*\/\<\>\&\\~!\",.\n]"                                                    {return TOKEN_ERROR;}
 <COMMENT_MULTIPLE>. {}
-<COMMENT_MULTIPLE>[\n]  {line_count++;line_number++; return '\n';}
+<COMMENT_MULTIPLE>[\n]  {line_count++;line_number++;}
 <COMMENT_MULTIPLE>"\\"{3} {BEGIN 0;}
 
 <COMMENT_SIMPLE>.* {}
@@ -135,7 +135,7 @@ retorne                                                     {return KW_RETORNE;}
 <READ_CHAR>. {chartemp = yytext[0];charlenght++;}
 
 <READ_STRING>"\"" {insert_simbol(temp_string,LIT_STRING);BEGIN 0;return LIT_STRING;}
-<READ_STRING>"\\" {printf("begin escape");BEGIN READ_ESCAPE;}
+<READ_STRING>"\\" {BEGIN READ_ESCAPE;}
 <READ_STRING>. {insert_char_into_temp_string(yytext[0]);}
 
 <READ_ESCAPE>"a" {insert_char_into_temp_string('\a');BEGIN READ_STRING;}
