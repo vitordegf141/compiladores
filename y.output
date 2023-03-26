@@ -1,0 +1,112 @@
+Terminals unused in grammar
+
+    KW_INTE
+    KW_REAL
+    KW_SE
+    KW_ENTAUM
+    KW_SENAUM
+    KW_ENQUANTO
+    KW_ENTRADA
+    KW_ESCREVA
+    KW_RETORNE
+    OPERATOR_LE
+    OPERATOR_GE
+    OPERATOR_EQ
+    OPERATOR_DIF
+    TK_IDENTIFIER
+    LIT_INTEIRO
+    LIT_FLOAT
+    LIT_CHAR
+    LIT_STRING
+    '+'
+    '-'
+    '*'
+    '/'
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: KW_CARA
+    2        | TOKEN_ERROR
+    3        | %empty
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '*' (42)
+    '+' (43)
+    '-' (45)
+    '/' (47)
+    error (256)
+    KW_CARA (258) 1
+    KW_INTE (259)
+    KW_REAL (260)
+    KW_SE (261)
+    KW_ENTAUM (262)
+    KW_SENAUM (263)
+    KW_ENQUANTO (264)
+    KW_ENTRADA (265)
+    KW_ESCREVA (266)
+    KW_RETORNE (267)
+    OPERATOR_LE (268)
+    OPERATOR_GE (269)
+    OPERATOR_EQ (270)
+    OPERATOR_DIF (271)
+    TK_IDENTIFIER (272)
+    LIT_INTEIRO (273)
+    LIT_FLOAT (274)
+    LIT_CHAR (275)
+    LIT_STRING (276)
+    TOKEN_ERROR (277) 2
+
+
+Nonterminals, with rules where they appear
+
+    $accept (27)
+        on left: 0
+    program (28)
+        on left: 1 2 3
+        on right: 0
+
+
+State 0
+
+    0 $accept: . program $end
+
+    KW_CARA      shift, and go to state 1
+    TOKEN_ERROR  shift, and go to state 2
+
+    $default  reduce using rule 3 (program)
+
+    program  go to state 3
+
+
+State 1
+
+    1 program: KW_CARA .
+
+    $default  reduce using rule 1 (program)
+
+
+State 2
+
+    2 program: TOKEN_ERROR .
+
+    $default  reduce using rule 2 (program)
+
+
+State 3
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 4
+
+
+State 4
+
+    0 $accept: program $end .
+
+    $default  accept

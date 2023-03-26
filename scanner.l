@@ -1,9 +1,10 @@
 
 
 %{
-#include "tokens.h"
+#include "y.tab.h"
 #include <string.h>
-#include "hash.h"
+#include "hash.c"
+
 
 int line_count =0;
 int line_number =1;
@@ -71,8 +72,7 @@ int insert_char_into_temp_string(char text)
         append_temp_string(text);
         temp_string_lenght++;
     }
-    //printf("temp_string = %s",temp_string);
-    //getchar();
+
 }
 
 int getLineNumber()
@@ -96,7 +96,7 @@ void stringnewline(char *literal){
 %x READ_ESCAPE
 %%
 
-;|\(|\)|\[|\]|\{|\}|\=|\+|\-|\*|\/|\<|\>|\&|\||\~           {return (int)yytext[0];}
+;|\(|\)|\[|\]|\{|\}|\=|\+|\-|\*|\/|\<|\>|\&|\||\~           {printf("\nachou %s",yytext);return (int)yytext[0];}
 cara                                                        {return KW_CARA;}
 inte                                                        {return KW_INTE;}
 real                                                        {return KW_REAL;}
@@ -107,11 +107,11 @@ enquanto                                                    {return KW_ENQUANTO;
 entrada                                                     {return KW_ENTRADA;}
 escreva                                                     {return KW_ESCREVA;}
 retorne                                                     {return KW_RETORNE;}
-\=\=                                                      {return OPERATOR_EQ;}
-\>\=                                                      {return OPERATOR_GE;}
-\<\=                                                      {return OPERATOR_LE;}
-\!\=                                                      {return OPERATOR_DIF;}
-[\n]                                                    {line_count++;line_number++;return '\n';}
+\=\=                                                      {printf("\nachou OPERATOR_EQ");return OPERATOR_EQ;}
+\>\=                                                      {printf("\nachou OPERATOR_GE");return OPERATOR_GE;}
+\<\=                                                      {printf("\nachou OPERATOR_LE");return OPERATOR_LE;}
+\!\=                                                      {printf("\nachou OPERATOR_DIF");;return OPERATOR_DIF;}
+"\n"                                                    {line_count++;line_number++;}
 "\""                                              {reset_temp_string();BEGIN READ_STRING;}
 "'"                                             {charlenght = 0;BEGIN READ_CHAR;}
 [0-9]+                                                  {insert_simbol(yytext,EH_LITERAL);return LIT_INTEIRO;}
@@ -120,9 +120,9 @@ retorne                                                     {return KW_RETORNE;}
 \/\/\/                                                       {BEGIN COMMENT_MULTIPLE;}
 [a-z]+[a-z\.\_\-1-9]*                                          {insert_simbol(yytext,EH_IDENTIFICADOR);return  TK_IDENTIFIER;}
 [ \t\r,]+                                                   {}
-"[^A-z'0-9 ;\(\)\[\]\{\}\=\+\-\*\/\<\>\&\\~!\",.\n]"                                                    {return TOKEN_ERROR;}
+.                                                    {printf("\nwtf = %s\n",yytext);return TOKEN_ERROR;}
 <COMMENT_MULTIPLE>. {}
-<COMMENT_MULTIPLE>[\n]  {line_count++;line_number++; return '\n';}
+<COMMENT_MULTIPLE>[\n]  {line_count++;line_number++;}
 <COMMENT_MULTIPLE>"\\"{3} {BEGIN 0;}
 
 <COMMENT_SIMPLE>.* {}
@@ -135,7 +135,7 @@ retorne                                                     {return KW_RETORNE;}
 <READ_CHAR>. {chartemp = yytext[0];charlenght++;}
 
 <READ_STRING>"\"" {insert_simbol(temp_string,LIT_STRING);BEGIN 0;return LIT_STRING;}
-<READ_STRING>"\\" {printf("begin escape");BEGIN READ_ESCAPE;}
+<READ_STRING>"\\" {BEGIN READ_ESCAPE;}
 <READ_STRING>. {insert_char_into_temp_string(yytext[0]);}
 
 <READ_ESCAPE>"a" {insert_char_into_temp_string('\a');BEGIN READ_STRING;}
@@ -155,11 +155,5 @@ retorne                                                     {return KW_RETORNE;}
 
 
 #include "main.c"
-#include "hash.c"
+#include "y.tab.c"
 
-
-int yywrap()
-{
-    running = 0;
-    return 1;
-}

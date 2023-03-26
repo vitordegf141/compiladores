@@ -1,8 +1,7 @@
 
 #include <stdio.h>
-#include "tokens.h"
 #include "hash.h"
-
+#include "y.tab.h"
 
 
 int decode(int token)
@@ -98,20 +97,53 @@ int decode(int token)
     }
 }
 
-int main()
+int main(int argc, char *args[])
 {   
-    printf("COMECOU");
-    int token;
-    yyin = fopen("sample.txt","r");
-    print_hashtable();
-    initMe();
-    while(isRunning())
-    {   
-        token = yylex();
-        if(!isRunning())
-            break;
-        decode(token);
+    printf("Start compiling\n");
+    char *filename;
+    if(argc <= 1)
+    {
+        printf("need to specify file\n");
     }
+    if(argc == 2)
+    {
+        filename = args[1];
+        printf("open file : %s\n",filename);
+    }
+    if(argc >= 3)
+    {
+        printf("Too many arguments");
+        return 0;
+    }
+    int result;
+    printf("COMECOU\n");
+    yyin = fopen(filename,"r");
+
+    if(yyin == NULL)
+    {
+        printf("File not found, using sample.txt\n");
+        yyin = fopen("sample.txt","r");
+        if(yyin == NULL)
+        {
+            printf("sample.txt not found too, exiting\n");
+            return 1;
+        }
+    }
+    initMe();
+    result = yyparse();
+    printf("\nresult é o que? %d",result);
+    if(result == 0)
+    {
+        printf("\nSUCCESSFUL it is a program !");
+    }
+    else if(result ==3)
+    {
+        printf("\n Error on %d",line_number);
+    }
+    
+    printf("\nline counting : %d\n", line_number);
+    printf("\n*********hash********\n");
     print_hashtable();
-    printf("line counting : %d\n", line_count);
+    printf("\n*******end hash******\n");
+    return result;
 }

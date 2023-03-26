@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.l": "c",
+        "y.tab.h": "c",
+        "string.h": "c"
+    }
+}
