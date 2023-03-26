@@ -145,5 +145,5 @@ int main(int argc, char *args[])
     printf("\n*********hash********\n");
     print_hashtable();
     printf("\n*******end hash******\n");
-    return result;
+    exit(result);
 }

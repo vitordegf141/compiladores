@@ -33,23 +33,23 @@ int yyerror(const char *);
 %left '+' '-'
 %left '*' '/'
 %%
-program: list_decl {printf("\nidentificou program");}
+program: list_decl 
     ; 
-list_decl: list_decl var_decl   {printf("\nidentificou list_decl var_decl");}
-    | list_decl function_decl   {printf("\nidentificou list_decl function_decl");}
-    |   {printf("\nidentificou list_decl empty");}
+list_decl: list_decl var_decl   
+    | list_decl function_decl   
+    |   
     ;
 
-list_commands: list_commands ';' command  {printf("\nidentificou list_commands command");}
-    | command {printf("\nidentificou single command in list_commands");}
+list_commands: list_commands ';' command  
+    | command 
     ;
-command: assingment {printf("\nidentificou assingment command");}
-    |   command_escreva {printf("\nidentificou command_escreva command");}
-    |   block_decl  {printf("\nidentificou block_decl command");}
-    |   command_senaum  {printf("\nidentificou command_senaum command");}
-    |   command_enquanto    {printf("\nidentificou command_enquanto command");}
-    |   command_return    {printf("\nidentificou command_return command");}
-    |      {printf("\nidentificou vazio command");}
+command: assingment 
+    |   command_escreva 
+    |   block_decl  
+    |   command_senaum  
+    |   command_enquanto    
+    |   command_return    
+    |      
     ;
 
 assingment: TK_IDENTIFIER '=' expression
@@ -65,21 +65,21 @@ command_enquanto: command KW_ENQUANTO '(' expression ')'
     ;
 command_return: KW_RETORNE expression
     ;
-var_decl: type_key_word TK_IDENTIFIER '=' expression ';'  {printf("\nidentificou init variavel");}
-    | vetor_decl ';' {printf("\nidentificou decl vetor");}
+var_decl: type_key_word TK_IDENTIFIER '=' expression ';'  
+    | vetor_decl ';' 
     ;
 
-function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl {printf("\nidentificou function_decl");}
+function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl 
     ;
 block_decl: '{' list_commands '}' 
     ;
 
-vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' {printf("\nidentificou just decl vetor");}
-    | type_key_word TK_IDENTIFIER '[' expression ']' list_expression {printf("\nidentificou decl init vetor");}
+vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' 
+    | type_key_word TK_IDENTIFIER '[' expression ']' list_expression 
     ;
 
-list_expression: list_expression expression {printf("\nidentificou list_expression expression ");}
-    | expression {printf("\nidentificou expression");}
+list_expression: list_expression expression 
+    | expression 
     ;
 
 expression: type_literal
@@ -102,20 +102,20 @@ expression: type_literal
     |   expression '|' expression
     |   expression '~' expression
     ;
-type_key_word: KW_CARA  {printf("\nidentificou KW_CARA");}
-    | KW_INTE   {printf("\nidentificou KW_INTE");}
-    | KW_REAL   {printf("\nidentificou KW_REAL");}
+type_key_word: KW_CARA  
+    | KW_INTE   
+    | KW_REAL   
     ;
 
-type_literal: LIT_CHAR {printf("\nidentificou LIT_CHAR");}
-    | LIT_FLOAT {printf("\nidentificou LIT_FLOAT");}
-    | LIT_INTEIRO {printf("\nidentificou LIT_INTEIRO");}
-    | LIT_STRING {printf("\nidentificou LIT_STRING");}
+type_literal: LIT_CHAR 
+    | LIT_FLOAT 
+    | LIT_INTEIRO 
+    | LIT_STRING 
     ;
 
-ident_list: ident_list ident_list {printf("\nidentificou ident_list ident_list");}
-    | type_key_word TK_IDENTIFIER {printf("\nidentificou type_key_word TK_IDENTIFIER TK_IDENTIFIER");}
-    | {printf("\nidentificou ident_list empty");}
+ident_list: ident_list ident_list 
+    | type_key_word TK_IDENTIFIER 
+    | 
     ;
 
 
@@ -124,7 +124,6 @@ ident_list: ident_list ident_list {printf("\nidentificou ident_list ident_list")
 int yywrap(void) {
     running =0;
     return 1;
-    //assingment: KW_CARA '=' {printf("identificou assingment, %d",$1);}
 } 
 int yyerror(const char *s) {
     printf("ahh pqp %s\n", s);

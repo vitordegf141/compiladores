@@ -51,7 +51,6 @@ int reset_temp_string()
 
 int insert_char_into_temp_string(char text)
 {
-    //printf("%c ",text);
     if(temp_max_string_lenght==0)
     {
         temp_string = malloc(sizeof(char)*incrimental_string_lenght);
@@ -96,7 +95,7 @@ void stringnewline(char *literal){
 %x READ_ESCAPE
 %%
 
-;|\(|\)|\[|\]|\{|\}|\=|\+|\-|\*|\/|\<|\>|\&|\||\~           {printf("\nachou %s",yytext);return (int)yytext[0];}
+;|\(|\)|\[|\]|\{|\}|\=|\+|\-|\*|\/|\<|\>|\&|\||\~           {return (int)yytext[0];}
 cara                                                        {return KW_CARA;}
 inte                                                        {return KW_INTE;}
 real                                                        {return KW_REAL;}
@@ -107,10 +106,10 @@ enquanto                                                    {return KW_ENQUANTO;
 entrada                                                     {return KW_ENTRADA;}
 escreva                                                     {return KW_ESCREVA;}
 retorne                                                     {return KW_RETORNE;}
-\=\=                                                      {printf("\nachou OPERATOR_EQ");return OPERATOR_EQ;}
-\>\=                                                      {printf("\nachou OPERATOR_GE");return OPERATOR_GE;}
-\<\=                                                      {printf("\nachou OPERATOR_LE");return OPERATOR_LE;}
-\!\=                                                      {printf("\nachou OPERATOR_DIF");;return OPERATOR_DIF;}
+\=\=                                                      {return OPERATOR_EQ;}
+\>\=                                                      {return OPERATOR_GE;}
+\<\=                                                      {return OPERATOR_LE;}
+\!\=                                                      {return OPERATOR_DIF;}
 "\n"                                                    {line_count++;line_number++;}
 "\""                                              {reset_temp_string();BEGIN READ_STRING;}
 "'"                                             {charlenght = 0;BEGIN READ_CHAR;}
@@ -120,7 +119,7 @@ retorne                                                     {return KW_RETORNE;}
 \/\/\/                                                       {BEGIN COMMENT_MULTIPLE;}
 [a-z]+[a-z\.\_\-1-9]*                                          {insert_simbol(yytext,EH_IDENTIFICADOR);return  TK_IDENTIFIER;}
 [ \t\r,]+                                                   {}
-.                                                    {printf("\nwtf = %s\n",yytext);return TOKEN_ERROR;}
+.                                                    {return TOKEN_ERROR;}
 <COMMENT_MULTIPLE>. {}
 <COMMENT_MULTIPLE>[\n]  {line_count++;line_number++;}
 <COMMENT_MULTIPLE>"\\"{3} {BEGIN 0;}
