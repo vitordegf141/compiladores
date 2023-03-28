@@ -32,6 +32,10 @@ int yyerror(const char *);
 
 %left '+' '-'
 %left '*' '/'
+%left '&' '|' '~'
+%left OPERATOR_GE OPERATOR_LE OPERATOR_EQ OPERATOR_DIF '<' '>' 
+%left KW_CARA KW_INTE KW_REAL
+
 %%
 program: list_decl 
     ; 
@@ -74,18 +78,17 @@ function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl
 block_decl: '{' list_commands '}' 
     ;
 
-vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' 
-    | type_key_word TK_IDENTIFIER '[' expression ']' list_expression 
+vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression ';'
     ;
 
 list_expression: list_expression expression 
-    | expression 
+    |
     ;
 
 expression: type_literal
     |   TK_IDENTIFIER
     |   KW_ENTRADA
-    |   TK_IDENTIFIER '(' list_expression ')'
+    |   TK_IDENTIFIER '(' list_expression ')' {printf("\nchamou funcao, linha %d",line_count);}
     |   TK_IDENTIFIER '[' expression ']'
     |   '(' expression ')'
     |   expression '+' expression
@@ -100,7 +103,7 @@ expression: type_literal
     |   expression OPERATOR_EQ expression
     |   expression '&' expression
     |   expression '|' expression
-    |   expression '~' expression
+    |   '~' expression
     ;
 type_key_word: KW_CARA  
     | KW_INTE   
@@ -113,8 +116,7 @@ type_literal: LIT_CHAR
     | LIT_STRING 
     ;
 
-ident_list: ident_list ident_list 
-    | type_key_word TK_IDENTIFIER 
+ident_list: ident_list type_key_word TK_IDENTIFIER
     | 
     ;
 

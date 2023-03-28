@@ -10,7 +10,7 @@ etapa1: y.tab.c lex.yy.c main.c parser.y
 	gcc -o etapa2 lex.yy.c
 
 y.tab.c: parser.y
-	yacc -d parser.y
+	yacc -d -v parser.y
 
 lex.yy.c: scanner.l
 	lex scanner.l
