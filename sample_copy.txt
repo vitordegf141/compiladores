@@ -4,7 +4,7 @@ cara c='x';
 cara d=100;
 inte a.5='A';
 cara i=1;
-inte v[10] 'a' 0 0 0 0 0 0 0 0 0;
+inte v[10] 'a' 0 0 0 0 0 0 0 0 0 ;
 inte matrix[100]; 
 real f=2.5;
 

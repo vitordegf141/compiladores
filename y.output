@@ -46,7 +46,7 @@ Grammar
 
    24 block_decl: '{' list_commands '}'
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression ';'
+   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression
 
    26 list_expression: list_expression expression
    27                | %empty
@@ -94,7 +94,7 @@ Terminals, with rules where they appear
     '+' (43) 34
     '-' (45) 35
     '/' (47) 37
-    ';' (59) 5 21 22 25
+    ';' (59) 5 21 22
     '<' (60) 40
     '=' (61) 14 15 21
     '>' (62) 38
@@ -275,7 +275,7 @@ State 10
 
    21 var_decl: type_key_word . TK_IDENTIFIER '=' expression ';'
    23 function_decl: type_key_word . TK_IDENTIFIER '(' ident_list ')' block_decl
-   25 vetor_decl: type_key_word . TK_IDENTIFIER '[' expression ']' list_expression ';'
+   25 vetor_decl: type_key_word . TK_IDENTIFIER '[' expression ']' list_expression
 
     TK_IDENTIFIER  shift, and go to state 12
 
@@ -291,7 +291,7 @@ State 12
 
    21 var_decl: type_key_word TK_IDENTIFIER . '=' expression ';'
    23 function_decl: type_key_word TK_IDENTIFIER . '(' ident_list ')' block_decl
-   25 vetor_decl: type_key_word TK_IDENTIFIER . '[' expression ']' list_expression ';'
+   25 vetor_decl: type_key_word TK_IDENTIFIER . '[' expression ']' list_expression
 
     '='  shift, and go to state 13
     '['  shift, and go to state 14
@@ -317,7 +317,7 @@ State 13
 
 State 14
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' . expression ']' list_expression ';'
+   25 vetor_decl: type_key_word TK_IDENTIFIER '[' . expression ']' list_expression
 
     KW_ENTRADA     shift, and go to state 16
     TK_IDENTIFIER  shift, and go to state 17
@@ -463,7 +463,7 @@ State 25
 
 State 26
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression . ']' list_expression ';'
+   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression . ']' list_expression
    34 expression: expression . '+' expression
    35           | expression . '-' expression
    36           | expression . '*' expression
@@ -801,7 +801,7 @@ State 44
 
 State 45
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' . list_expression ';'
+   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' . list_expression
 
     $default  reduce using rule 27 (list_expression)
 
@@ -1165,7 +1165,7 @@ State 62
 
 State 63
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression . ';'
+   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression .
    26 list_expression: list_expression . expression
 
     KW_ENTRADA     shift, and go to state 16
@@ -1175,8 +1175,9 @@ State 63
     LIT_CHAR       shift, and go to state 20
     LIT_STRING     shift, and go to state 21
     '~'            shift, and go to state 22
-    ';'            shift, and go to state 70
     '('            shift, and go to state 23
+
+    $default  reduce using rule 25 (vetor_decl)
 
     expression    go to state 69
     type_literal  go to state 25
@@ -1186,22 +1187,22 @@ State 64
 
    24 block_decl: '{' . list_commands '}'
 
-    KW_ENTAUM      shift, and go to state 71
-    KW_ESCREVA     shift, and go to state 72
-    KW_RETORNE     shift, and go to state 73
-    TK_IDENTIFIER  shift, and go to state 74
+    KW_ENTAUM      shift, and go to state 70
+    KW_ESCREVA     shift, and go to state 71
+    KW_RETORNE     shift, and go to state 72
+    TK_IDENTIFIER  shift, and go to state 73
     '{'            shift, and go to state 64
 
     $default  reduce using rule 13 (command)
 
-    list_commands     go to state 75
-    command           go to state 76
-    assingment        go to state 77
-    command_escreva   go to state 78
-    command_senaum    go to state 79
-    command_enquanto  go to state 80
-    command_return    go to state 81
-    block_decl        go to state 82
+    list_commands     go to state 74
+    command           go to state 75
+    assingment        go to state 76
+    command_escreva   go to state 77
+    command_senaum    go to state 78
+    command_enquanto  go to state 79
+    command_return    go to state 80
+    block_decl        go to state 81
 
 
 State 65
@@ -1266,43 +1267,36 @@ State 69
 
 State 70
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression ';' .
-
-    $default  reduce using rule 25 (vetor_decl)
-
-
-State 71
-
    17 command_senaum: KW_ENTAUM . command KW_SE '(' expression ')'
    18               | KW_ENTAUM . command KW_SENAUM command KW_SE '(' expression ')'
 
-    KW_ENTAUM      shift, and go to state 71
-    KW_ESCREVA     shift, and go to state 72
-    KW_RETORNE     shift, and go to state 73
-    TK_IDENTIFIER  shift, and go to state 74
+    KW_ENTAUM      shift, and go to state 70
+    KW_ESCREVA     shift, and go to state 71
+    KW_RETORNE     shift, and go to state 72
+    TK_IDENTIFIER  shift, and go to state 73
     '{'            shift, and go to state 64
 
     $default  reduce using rule 13 (command)
 
-    command           go to state 83
-    assingment        go to state 77
-    command_escreva   go to state 78
-    command_senaum    go to state 79
-    command_enquanto  go to state 80
-    command_return    go to state 81
-    block_decl        go to state 82
+    command           go to state 82
+    assingment        go to state 76
+    command_escreva   go to state 77
+    command_senaum    go to state 78
+    command_enquanto  go to state 79
+    command_return    go to state 80
+    block_decl        go to state 81
 
 
-State 72
+State 71
 
    16 command_escreva: KW_ESCREVA . list_expression
 
     $default  reduce using rule 27 (list_expression)
 
-    list_expression  go to state 84
+    list_expression  go to state 83
 
 
-State 73
+State 72
 
    20 command_return: KW_RETORNE . expression
 
@@ -1315,92 +1309,92 @@ State 73
     '~'            shift, and go to state 22
     '('            shift, and go to state 23
 
-    expression    go to state 85
+    expression    go to state 84
     type_literal  go to state 25
 
 
-State 74
+State 73
 
    14 assingment: TK_IDENTIFIER . '=' expression
    15           | TK_IDENTIFIER . '[' expression ']' '=' expression
 
-    '='  shift, and go to state 86
-    '['  shift, and go to state 87
+    '='  shift, and go to state 85
+    '['  shift, and go to state 86
 
 
-State 75
+State 74
 
     5 list_commands: list_commands . ';' command
    24 block_decl: '{' list_commands . '}'
 
-    ';'  shift, and go to state 88
-    '}'  shift, and go to state 89
+    ';'  shift, and go to state 87
+    '}'  shift, and go to state 88
 
 
-State 76
+State 75
 
     6 list_commands: command .
    19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
 
-    KW_ENQUANTO  shift, and go to state 90
+    KW_ENQUANTO  shift, and go to state 89
 
     $default  reduce using rule 6 (list_commands)
 
 
-State 77
+State 76
 
     7 command: assingment .
 
     $default  reduce using rule 7 (command)
 
 
-State 78
+State 77
 
     8 command: command_escreva .
 
     $default  reduce using rule 8 (command)
 
 
-State 79
+State 78
 
    10 command: command_senaum .
 
     $default  reduce using rule 10 (command)
 
 
-State 80
+State 79
 
    11 command: command_enquanto .
 
     $default  reduce using rule 11 (command)
 
 
-State 81
+State 80
 
    12 command: command_return .
 
     $default  reduce using rule 12 (command)
 
 
-State 82
+State 81
 
     9 command: block_decl .
 
     $default  reduce using rule 9 (command)
 
 
-State 83
+State 82
 
    17 command_senaum: KW_ENTAUM command . KW_SE '(' expression ')'
    18               | KW_ENTAUM command . KW_SENAUM command KW_SE '(' expression ')'
    19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
 
-    KW_SE        shift, and go to state 91
-    KW_SENAUM    shift, and go to state 92
-    KW_ENQUANTO  shift, and go to state 90
+    KW_SE        shift, and go to state 90
+    KW_SENAUM    shift, and go to state 91
+    KW_ENQUANTO  shift, and go to state 89
 
 
-State 84
+State 83
 
    16 command_escreva: KW_ESCREVA list_expression .
    26 list_expression: list_expression . expression
@@ -1420,7 +1414,7 @@ State 84
     type_literal  go to state 25
 
 
-State 85
+State 84
 
    20 command_return: KW_RETORNE expression .
    34 expression: expression . '+' expression
@@ -1452,9 +1446,26 @@ State 85
     $default  reduce using rule 20 (command_return)
 
 
-State 86
+State 85
 
    14 assingment: TK_IDENTIFIER '=' . expression
+
+    KW_ENTRADA     shift, and go to state 16
+    TK_IDENTIFIER  shift, and go to state 17
+    LIT_INTEIRO    shift, and go to state 18
+    LIT_FLOAT      shift, and go to state 19
+    LIT_CHAR       shift, and go to state 20
+    LIT_STRING     shift, and go to state 21
+    '~'            shift, and go to state 22
+    '('            shift, and go to state 23
+
+    expression    go to state 92
+    type_literal  go to state 25
+
+
+State 86
+
+   15 assingment: TK_IDENTIFIER '[' . expression ']' '=' expression
 
     KW_ENTRADA     shift, and go to state 16
     TK_IDENTIFIER  shift, and go to state 17
@@ -1471,85 +1482,68 @@ State 86
 
 State 87
 
-   15 assingment: TK_IDENTIFIER '[' . expression ']' '=' expression
-
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 94
-    type_literal  go to state 25
-
-
-State 88
-
     5 list_commands: list_commands ';' . command
 
-    KW_ENTAUM      shift, and go to state 71
-    KW_ESCREVA     shift, and go to state 72
-    KW_RETORNE     shift, and go to state 73
-    TK_IDENTIFIER  shift, and go to state 74
+    KW_ENTAUM      shift, and go to state 70
+    KW_ESCREVA     shift, and go to state 71
+    KW_RETORNE     shift, and go to state 72
+    TK_IDENTIFIER  shift, and go to state 73
     '{'            shift, and go to state 64
 
     $default  reduce using rule 13 (command)
 
-    command           go to state 95
-    assingment        go to state 77
-    command_escreva   go to state 78
-    command_senaum    go to state 79
-    command_enquanto  go to state 80
-    command_return    go to state 81
-    block_decl        go to state 82
+    command           go to state 94
+    assingment        go to state 76
+    command_escreva   go to state 77
+    command_senaum    go to state 78
+    command_enquanto  go to state 79
+    command_return    go to state 80
+    block_decl        go to state 81
 
 
-State 89
+State 88
 
    24 block_decl: '{' list_commands '}' .
 
     $default  reduce using rule 24 (block_decl)
 
 
-State 90
+State 89
 
    19 command_enquanto: command KW_ENQUANTO . '(' expression ')'
+
+    '('  shift, and go to state 95
+
+
+State 90
+
+   17 command_senaum: KW_ENTAUM command KW_SE . '(' expression ')'
 
     '('  shift, and go to state 96
 
 
 State 91
 
-   17 command_senaum: KW_ENTAUM command KW_SE . '(' expression ')'
-
-    '('  shift, and go to state 97
-
-
-State 92
-
    18 command_senaum: KW_ENTAUM command KW_SENAUM . command KW_SE '(' expression ')'
 
-    KW_ENTAUM      shift, and go to state 71
-    KW_ESCREVA     shift, and go to state 72
-    KW_RETORNE     shift, and go to state 73
-    TK_IDENTIFIER  shift, and go to state 74
+    KW_ENTAUM      shift, and go to state 70
+    KW_ESCREVA     shift, and go to state 71
+    KW_RETORNE     shift, and go to state 72
+    TK_IDENTIFIER  shift, and go to state 73
     '{'            shift, and go to state 64
 
     $default  reduce using rule 13 (command)
 
-    command           go to state 98
-    assingment        go to state 77
-    command_escreva   go to state 78
-    command_senaum    go to state 79
-    command_enquanto  go to state 80
-    command_return    go to state 81
-    block_decl        go to state 82
+    command           go to state 97
+    assingment        go to state 76
+    command_escreva   go to state 77
+    command_senaum    go to state 78
+    command_enquanto  go to state 79
+    command_return    go to state 80
+    block_decl        go to state 81
 
 
-State 93
+State 92
 
    14 assingment: TK_IDENTIFIER '=' expression .
    34 expression: expression . '+' expression
@@ -1581,7 +1575,7 @@ State 93
     $default  reduce using rule 14 (assingment)
 
 
-State 94
+State 93
 
    15 assingment: TK_IDENTIFIER '[' expression . ']' '=' expression
    34 expression: expression . '+' expression
@@ -1609,22 +1603,39 @@ State 94
     '|'           shift, and go to state 41
     '<'           shift, and go to state 42
     '>'           shift, and go to state 43
-    ']'           shift, and go to state 99
+    ']'           shift, and go to state 98
 
 
-State 95
+State 94
 
     5 list_commands: list_commands ';' command .
    19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
 
-    KW_ENQUANTO  shift, and go to state 90
+    KW_ENQUANTO  shift, and go to state 89
 
     $default  reduce using rule 5 (list_commands)
 
 
-State 96
+State 95
 
    19 command_enquanto: command KW_ENQUANTO '(' . expression ')'
+
+    KW_ENTRADA     shift, and go to state 16
+    TK_IDENTIFIER  shift, and go to state 17
+    LIT_INTEIRO    shift, and go to state 18
+    LIT_FLOAT      shift, and go to state 19
+    LIT_CHAR       shift, and go to state 20
+    LIT_STRING     shift, and go to state 21
+    '~'            shift, and go to state 22
+    '('            shift, and go to state 23
+
+    expression    go to state 99
+    type_literal  go to state 25
+
+
+State 96
+
+   17 command_senaum: KW_ENTAUM command KW_SE '(' . expression ')'
 
     KW_ENTRADA     shift, and go to state 16
     TK_IDENTIFIER  shift, and go to state 17
@@ -1641,40 +1652,54 @@ State 96
 
 State 97
 
-   17 command_senaum: KW_ENTAUM command KW_SE '(' . expression ')'
+   18 command_senaum: KW_ENTAUM command KW_SENAUM command . KW_SE '(' expression ')'
+   19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 101
-    type_literal  go to state 25
+    KW_SE        shift, and go to state 101
+    KW_ENQUANTO  shift, and go to state 89
 
 
 State 98
 
-   18 command_senaum: KW_ENTAUM command KW_SENAUM command . KW_SE '(' expression ')'
-   19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
+   15 assingment: TK_IDENTIFIER '[' expression ']' . '=' expression
 
-    KW_SE        shift, and go to state 102
-    KW_ENQUANTO  shift, and go to state 90
+    '='  shift, and go to state 102
 
 
 State 99
 
-   15 assingment: TK_IDENTIFIER '[' expression ']' . '=' expression
+   19 command_enquanto: command KW_ENQUANTO '(' expression . ')'
+   34 expression: expression . '+' expression
+   35           | expression . '-' expression
+   36           | expression . '*' expression
+   37           | expression . '/' expression
+   38           | expression . '>' expression
+   39           | expression . OPERATOR_GE expression
+   40           | expression . '<' expression
+   41           | expression . OPERATOR_LE expression
+   42           | expression . OPERATOR_DIF expression
+   43           | expression . OPERATOR_EQ expression
+   44           | expression . '&' expression
+   45           | expression . '|' expression
 
-    '='  shift, and go to state 103
+    OPERATOR_LE   shift, and go to state 32
+    OPERATOR_GE   shift, and go to state 33
+    OPERATOR_EQ   shift, and go to state 34
+    OPERATOR_DIF  shift, and go to state 35
+    '+'           shift, and go to state 36
+    '-'           shift, and go to state 37
+    '*'           shift, and go to state 38
+    '/'           shift, and go to state 39
+    '&'           shift, and go to state 40
+    '|'           shift, and go to state 41
+    '<'           shift, and go to state 42
+    '>'           shift, and go to state 43
+    ')'           shift, and go to state 103
 
 
 State 100
 
-   19 command_enquanto: command KW_ENQUANTO '(' expression . ')'
+   17 command_senaum: KW_ENTAUM command KW_SE '(' expression . ')'
    34 expression: expression . '+' expression
    35           | expression . '-' expression
    36           | expression . '*' expression
@@ -1705,45 +1730,45 @@ State 100
 
 State 101
 
-   17 command_senaum: KW_ENTAUM command KW_SE '(' expression . ')'
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE . '(' expression ')'
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-    ')'           shift, and go to state 105
+    '('  shift, and go to state 105
 
 
 State 102
 
-   18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE . '(' expression ')'
+   15 assingment: TK_IDENTIFIER '[' expression ']' '=' . expression
 
-    '('  shift, and go to state 106
+    KW_ENTRADA     shift, and go to state 16
+    TK_IDENTIFIER  shift, and go to state 17
+    LIT_INTEIRO    shift, and go to state 18
+    LIT_FLOAT      shift, and go to state 19
+    LIT_CHAR       shift, and go to state 20
+    LIT_STRING     shift, and go to state 21
+    '~'            shift, and go to state 22
+    '('            shift, and go to state 23
+
+    expression    go to state 106
+    type_literal  go to state 25
 
 
 State 103
 
-   15 assingment: TK_IDENTIFIER '[' expression ']' '=' . expression
+   19 command_enquanto: command KW_ENQUANTO '(' expression ')' .
+
+    $default  reduce using rule 19 (command_enquanto)
+
+
+State 104
+
+   17 command_senaum: KW_ENTAUM command KW_SE '(' expression ')' .
+
+    $default  reduce using rule 17 (command_senaum)
+
+
+State 105
+
+   18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE '(' . expression ')'
 
     KW_ENTRADA     shift, and go to state 16
     TK_IDENTIFIER  shift, and go to state 17
@@ -1758,38 +1783,7 @@ State 103
     type_literal  go to state 25
 
 
-State 104
-
-   19 command_enquanto: command KW_ENQUANTO '(' expression ')' .
-
-    $default  reduce using rule 19 (command_enquanto)
-
-
-State 105
-
-   17 command_senaum: KW_ENTAUM command KW_SE '(' expression ')' .
-
-    $default  reduce using rule 17 (command_senaum)
-
-
 State 106
-
-   18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE '(' . expression ')'
-
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 108
-    type_literal  go to state 25
-
-
-State 107
 
    15 assingment: TK_IDENTIFIER '[' expression ']' '=' expression .
    34 expression: expression . '+' expression
@@ -1821,7 +1815,7 @@ State 107
     $default  reduce using rule 15 (assingment)
 
 
-State 108
+State 107
 
    18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE '(' expression . ')'
    34 expression: expression . '+' expression
@@ -1849,10 +1843,10 @@ State 108
     '|'           shift, and go to state 41
     '<'           shift, and go to state 42
     '>'           shift, and go to state 43
-    ')'           shift, and go to state 109
+    ')'           shift, and go to state 108
 
 
-State 109
+State 108
 
    18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE '(' expression ')' .
 

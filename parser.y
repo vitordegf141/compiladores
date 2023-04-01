@@ -78,17 +78,17 @@ function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl
 block_decl: '{' list_commands '}' 
     ;
 
-vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression ';'
+vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression 
     ;
 
 list_expression: list_expression expression 
-    |
+    |  
     ;
 
 expression: type_literal
     |   TK_IDENTIFIER
     |   KW_ENTRADA
-    |   TK_IDENTIFIER '(' list_expression ')' {printf("\nchamou funcao, linha %d",line_count);}
+    |   TK_IDENTIFIER '(' list_expression ')' 
     |   TK_IDENTIFIER '[' expression ']'
     |   '(' expression ')'
     |   expression '+' expression
@@ -105,9 +105,9 @@ expression: type_literal
     |   expression '|' expression
     |   '~' expression
     ;
-type_key_word: KW_CARA  
-    | KW_INTE   
-    | KW_REAL   
+type_key_word: KW_CARA 
+    | KW_INTE 
+    | KW_REAL 
     ;
 
 type_literal: LIT_CHAR 
@@ -128,7 +128,7 @@ int yywrap(void) {
     return 1;
 } 
 int yyerror(const char *s) {
-    printf("ahh pqp %s\n", s);
- fprintf(stderr, "ahh pqp %s\n", s);
+    printf("\nahh nao %s linha  = %d\n", s,line_number);
+ fprintf(stderr, "\nahh nao %s linha = %d\n", s,line_number);
  return 3;
 } 
