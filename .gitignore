@@ -51,4 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 Etapa2/
+etapa1.*
+etapa2.*
 etapa1.tgz
+etapa2.tgz
+etapa3.tgz
