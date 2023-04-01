@@ -120,7 +120,7 @@ Terminals, with rules where they appear
     OPERATOR_EQ (270) 43
     OPERATOR_DIF (271) 42
     TK_IDENTIFIER (272) 14 15 21 23 25 29 31 32 54
-    LIT_INTEIRO (273) 52
+    LIT_INTEIRO <symbol> (273) 52
     LIT_FLOAT (274) 51
     LIT_CHAR (275) 50
     LIT_STRING (276) 53

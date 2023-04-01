@@ -3,7 +3,6 @@
 
 #define TABLE_SIZE 997
 #define EH_IDENTIFICADOR 1
-#define EH_LITERAL 2
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,8 +20,8 @@ Hash_node * hashtable[TABLE_SIZE];
 unsigned long hash(char *name);
 int next_has_simbol(Hash_node *simbol_root,char *name, int type);
 Hash_node *create_simbol(char *simbol_name, int type);
-void insert_in_next( Hash_node *simbol_root,char *new_simbol, int type);
+Hash_node* insert_in_next( Hash_node *simbol_root,char *new_simbol, int type);
 void print_hashtable();
-int insert_simbol(char *name, int type);
+Hash_node* insert_simbol(char *name, int type);
 
 #endif

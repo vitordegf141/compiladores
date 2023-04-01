@@ -1,8 +1,12 @@
 
 
-typedef struct astnode
+#ifndef HEADER_AST
+#define HEADER_AST
+
+typedef struct Astnode
 {
     int type;
-    struct astnode *parent;
-    struct astnode *sons;
-} ast;
+    struct Astnode *parent;
+    struct Astnode *sons;
+} Ast;
+#endif

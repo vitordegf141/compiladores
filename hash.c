@@ -1,5 +1,7 @@
-#include "hash.h"
 
+#ifndef C_HASH
+#define C_HASH
+#include "hash.h"
 unsigned long hash(char *name)
 {
     unsigned long sum =0;
@@ -39,9 +41,11 @@ int next_has_simbol(Hash_node *simbol_root,char *name, int type)
     return new;
 }
 
-void insert_in_next( Hash_node *simbol_root,char *new_simbol, int type){
-    if(simbol_root == NULL || new_simbol == NULL)
-        return;
+Hash_node* insert_in_next( Hash_node *simbol_root,char *new_simbol, int type){
+    if(simbol_root == NULL || new_simbol == NULL){
+         fprintf(stderr, "\ninsert_in_next with root simbol null or null new_simbol\n");
+        return NULL;
+    }
     else{
         if(strcmp(simbol_root->name,new_simbol) == 0)
         {
@@ -52,10 +56,11 @@ void insert_in_next( Hash_node *simbol_root,char *new_simbol, int type){
             if(simbol_root->next == NULL)
             {
                 simbol_root->next = create_simbol(new_simbol,type);
+                return simbol_root->next;
             }
             else
             {
-                insert_in_next(simbol_root->next,new_simbol,type);
+                return insert_in_next(simbol_root->next,new_simbol,type);
             }
         }
     }
@@ -73,26 +78,25 @@ void print_hashtable()
     printf("\nend\n");
 }
 
-int insert_simbol(char *name, int type){
+Hash_node* insert_simbol(char *name, int type){
     if(name == NULL)
         return 0;
     unsigned long computed_hash = hash(name);
     if(hashtable[computed_hash] != NULL){
         if(strcmp(hashtable[computed_hash]->name,name) == 0)
         {
-            hashtable[computed_hash]->appearences;
-            return 1;
+            hashtable[computed_hash]->appearences++;
+            return hashtable[computed_hash];
         }
         else{
-            insert_in_next(hashtable[computed_hash],name,type);
-            return 1;
+            return insert_in_next(hashtable[computed_hash],name,type);
         }
     }
     else
     {
         Hash_node *new_simbol=create_simbol(name,type);
         hashtable[computed_hash]=new_simbol;
-        return 1;
+        return new_simbol;
     }
 
     
@@ -111,3 +115,5 @@ int has_simbol(char *name,int type){
         return 0;
     }
 }
+
+#endif

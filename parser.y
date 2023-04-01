@@ -1,8 +1,17 @@
+
 %{
+#include "hash.h"
+#include "ast.h"
 int yyerror(const char *); 
 #define YYERROR_VERBOSE
+
 %}
 
+%union 
+{
+    Hash_node *symbol;
+    Ast *ast;
+} 
 
 %token KW_CARA 
 %token KW_INTE
@@ -23,8 +32,8 @@ int yyerror(const char *);
 
 %token TK_IDENTIFIER
 
-%token LIT_INTEIRO
-%token LIT_FLOAT  
+%token<symbol> LIT_INTEIRO
+%token LIT_FLOAT
 %token LIT_CHAR 
 %token LIT_STRING 
 
@@ -112,7 +121,7 @@ type_key_word: KW_CARA
 
 type_literal: LIT_CHAR 
     | LIT_FLOAT 
-    | LIT_INTEIRO 
+    | LIT_INTEIRO {printf("\n\tachou LIT_INTEIRO com tipo = %d",$1->type);}
     | LIT_STRING 
     ;
 
@@ -122,7 +131,11 @@ ident_list: ident_list type_key_word TK_IDENTIFIER
 
 
 %%
+
 #include "y.tab.h"
+#include "hash.h"
+#include "ast.h"
+
 int yywrap(void) {
     running =0;
     return 1;

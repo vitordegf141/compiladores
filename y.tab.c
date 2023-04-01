@@ -66,12 +66,15 @@
 
 
 /* First part of user prologue.  */
-#line 1 "parser.y"
+#line 2 "parser.y"
 
+#include "hash.h"
+#include "ast.h"
 int yyerror(const char *); 
 #define YYERROR_VERBOSE
 
-#line 75 "y.tab.c"
+
+#line 78 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -165,7 +168,17 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 11 "parser.y"
+
+    Hash_node *symbol;
+    Ast *ast;
+
+#line 179 "y.tab.c"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -537,14 +550,14 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    40,    40,    42,    43,    44,    47,    48,    50,    51,
-      52,    53,    54,    55,    56,    59,    60,    63,    65,    66,
-      68,    70,    72,    73,    76,    78,    81,    84,    85,    88,
-      89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104,   105,   106,   108,   109,
-     110,   113,   114,   115,   116,   119,   120
+       0,    49,    49,    51,    52,    53,    56,    57,    59,    60,
+      61,    62,    63,    64,    65,    68,    69,    72,    74,    75,
+      77,    79,    81,    82,    85,    87,    90,    93,    94,    97,
+      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
+     108,   109,   110,   111,   112,   113,   114,   115,   117,   118,
+     119,   122,   123,   124,   125,   128,   129
 };
 #endif
 
@@ -1444,8 +1457,14 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 53:
+#line 124 "parser.y"
+                  {printf("\n\tachou LIT_INTEIRO com tipo = %d",(yyvsp[0].symbol)->type);}
+#line 1464 "y.tab.c"
+    break;
 
-#line 1449 "y.tab.c"
+
+#line 1468 "y.tab.c"
 
       default: break;
     }
@@ -1677,9 +1696,13 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 124 "parser.y"
+#line 133 "parser.y"
+
 
 #include "y.tab.h"
+#include "hash.h"
+#include "ast.h"
+
 int yywrap(void) {
     running =0;
     return 1;

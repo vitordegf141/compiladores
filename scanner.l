@@ -1,9 +1,11 @@
 
 
 %{
+#include "hash.c"
+#include "ast.h"
 #include "y.tab.h"
 #include <string.h>
-#include "hash.c"
+
 
 
 int line_count =0;
@@ -15,10 +17,9 @@ char *temp_string;
 char temp_string_lenght;
 char temp_max_string_lenght;
 #define TABLE_SIZE 997
-#define EH_IDENTIFICADOR 1
-#define EH_LITERAL 2
 
 
+Hash_node* tester;
 void initMe(void)
 {
     //*hashtable = ( simbol *) malloc(sizeof( simbol)*TABLE_SIZE);
@@ -36,12 +37,12 @@ int isRunning()
 
 #define incrimental_string_lenght 10
 
-char* append_temp_string(char new_text){
+void append_temp_string(char new_text){
     temp_string[temp_string_lenght-1]=new_text;
     temp_string[temp_string_lenght]='\0';
 }
 
-int reset_temp_string()
+void reset_temp_string()
     {
         temp_string = malloc(sizeof(char)*incrimental_string_lenght);
         temp_max_string_lenght =incrimental_string_lenght;
@@ -49,7 +50,7 @@ int reset_temp_string()
         temp_string_lenght =1;
     }
 
-int insert_char_into_temp_string(char text)
+void insert_char_into_temp_string(char text)
 {
     if(temp_max_string_lenght==0)
     {
@@ -113,11 +114,11 @@ retorne                                                     {return KW_RETORNE;}
 "\n"                                                    {line_count++;line_number++;}
 "\""                                              {reset_temp_string();BEGIN READ_STRING;}
 "'"                                             {charlenght = 0;BEGIN READ_CHAR;}
-[0-9]+                                                  {insert_simbol(yytext,EH_LITERAL);return LIT_INTEIRO;}
-[0-9]+\.[0-9]+                                                {insert_simbol(yytext,EH_LITERAL);return LIT_FLOAT;}
+[0-9]+                                                  {yylval.symbol = insert_simbol(yytext,LIT_INTEIRO);return LIT_INTEIRO;}
+[0-9]+\.[0-9]+                                                {insert_simbol(yytext,LIT_FLOAT);return LIT_FLOAT;}
 \/\/                                                    {BEGIN COMMENT_SIMPLE;}
 \/\/\/                                                       {BEGIN COMMENT_MULTIPLE;}
-[a-z]+[a-z\.\_\-1-9]*                                          {insert_simbol(yytext,EH_IDENTIFICADOR);return  TK_IDENTIFIER;}
+[a-z]+[a-z\.\_\-1-9]*                                          {insert_simbol(yytext,TK_IDENTIFIER);return  TK_IDENTIFIER;}
 [ \t\r,]+                                                   {}
 .                                                    {return TOKEN_ERROR;}
 <COMMENT_MULTIPLE>. {}

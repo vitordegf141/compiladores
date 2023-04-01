@@ -52,6 +52,9 @@ Mkfile.old
 dkms.conf
 Etapa2/
 output.txt
-etapa2
-etapa1
+etapa2.exe
+etapa1.exe
+etapa3.exe
 etapa2.tgz
+etapa1.tgz
+etapa3.tgz
