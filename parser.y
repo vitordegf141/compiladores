@@ -78,7 +78,7 @@ function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl
 block_decl: '{' list_commands '}' 
     ;
 
-vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression ';'
+vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression
     ;
 
 list_expression: list_expression expression 
@@ -128,7 +128,7 @@ int yywrap(void) {
     return 1;
 } 
 int yyerror(const char *s) {
-    printf("ahh pqp %s\n", s);
- fprintf(stderr, "ahh pqp %s\n", s);
+    printf("ahh nao  %s , line_number = %d\n", s,line_number);
+ fprintf(stderr, "ahh nao  %s , line_number = %d\n", s,line_number);
  return 3;
 } 

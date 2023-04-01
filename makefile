@@ -7,7 +7,7 @@
 # and #include "main.c" in the last part of the scanner.l
 #
 etapa1: y.tab.c lex.yy.c main.c parser.y
-	gcc -o etapa2 lex.yy.c
+	gcc -o etapa2.exe lex.yy.c
 
 y.tab.c: parser.y
 	yacc -d -v parser.y

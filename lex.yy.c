@@ -569,12 +569,12 @@ int isRunning()
 
 #define incrimental_string_lenght 10
 
-char* append_temp_string(char new_text){
+void append_temp_string(char new_text){
     temp_string[temp_string_lenght-1]=new_text;
     temp_string[temp_string_lenght]='\0';
 }
 
-int reset_temp_string()
+void reset_temp_string()
     {
         temp_string = malloc(sizeof(char)*incrimental_string_lenght);
         temp_max_string_lenght =incrimental_string_lenght;
@@ -582,7 +582,7 @@ int reset_temp_string()
         temp_string_lenght =1;
     }
 
-int insert_char_into_temp_string(char text)
+void insert_char_into_temp_string(char text)
 {
     if(temp_max_string_lenght==0)
     {

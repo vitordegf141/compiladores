@@ -23,7 +23,6 @@ inte main ()
   escreva v[5];
   escreva a;
   i = 2;
-
   escreva "Digite um numero: \n" test;
   a = entrada;
   escreva "Digite mais um numero: \n";
