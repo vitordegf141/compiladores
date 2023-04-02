@@ -1,11 +1,10 @@
 
 
 %{
-#include "hash.c"
+#include "hash.h"
 #include "ast.h"
-#include "y.tab.h"
 #include <string.h>
-
+#include "y.tab.h"
 
 
 int line_count =0;
@@ -80,8 +79,8 @@ int getLineNumber()
     return line_number;
 }
 
-void stringnewline(char *literal){
-    if(strstr(literal,"\n") !=NULL)
+void stringnewline(char *literal1){
+    if(strstr(literal1,"\n") !=NULL)
     {
         line_count++;
         line_number++;
@@ -97,7 +96,7 @@ void stringnewline(char *literal){
 %%
 
 ;|\(|\)|\[|\]|\{|\}|\=|\+|\-|\*|\/|\<|\>|\&|\||\~           {return (int)yytext[0];}
-cara                                                        {return KW_CARA;}
+cara                                                        {printf("\nachou cara");return KW_CARA;}
 inte                                                        {return KW_INTE;}
 real                                                        {return KW_REAL;}
 se                                                          {return KW_SE;}
@@ -114,11 +113,11 @@ retorne                                                     {return KW_RETORNE;}
 "\n"                                                    {line_count++;line_number++;}
 "\""                                              {reset_temp_string();BEGIN READ_STRING;}
 "'"                                             {charlenght = 0;BEGIN READ_CHAR;}
-[0-9]+                                                  {yylval.symbol = insert_simbol(yytext,LIT_INTEIRO);return LIT_INTEIRO;}
-[0-9]+\.[0-9]+                                                {insert_simbol(yytext,LIT_FLOAT);return LIT_FLOAT;}
+[0-9]+                                                  {yylval.symbol = insert_simbol(yytext,LIT_INTEIRO,1);return LIT_INTEIRO;}
+[0-9]+\.[0-9]+                                                {yylval.symbol = insert_simbol(yytext,LIT_FLOAT,1);return LIT_FLOAT;}
 \/\/                                                    {BEGIN COMMENT_SIMPLE;}
 \/\/\/                                                       {BEGIN COMMENT_MULTIPLE;}
-[a-z]+[a-z\.\_\-1-9]*                                          {insert_simbol(yytext,TK_IDENTIFIER);return  TK_IDENTIFIER;}
+[a-z]+[a-z\.\_\-1-9]*                                          {yylval.symbol =insert_simbol(yytext,TK_IDENTIFIER,0);return  TK_IDENTIFIER;}
 [ \t\r,]+                                                   {}
 .                                                    {return TOKEN_ERROR;}
 <COMMENT_MULTIPLE>. {}
@@ -131,10 +130,10 @@ retorne                                                     {return KW_RETORNE;}
 
 
 
-<READ_CHAR>"'" {if (charlenght == 1) {insert_simbol(&chartemp,LIT_CHAR); yytext = &chartemp; BEGIN 0;return LIT_CHAR;} else{ return TOKEN_ERROR;} }
+<READ_CHAR>"'" {if (charlenght == 1) {yylval.symbol = insert_simbol(&chartemp,LIT_CHAR,1); yytext = &chartemp; BEGIN 0;return LIT_CHAR;} else{ return TOKEN_ERROR;} }
 <READ_CHAR>. {chartemp = yytext[0];charlenght++;}
 
-<READ_STRING>"\"" {insert_simbol(temp_string,LIT_STRING);BEGIN 0;return LIT_STRING;}
+<READ_STRING>"\"" {yylval.symbol = insert_simbol(temp_string,LIT_STRING,1);BEGIN 0;return LIT_STRING;}
 <READ_STRING>"\\" {BEGIN READ_ESCAPE;}
 <READ_STRING>. {insert_char_into_temp_string(yytext[0]);}
 

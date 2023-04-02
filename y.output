@@ -3,7 +3,7 @@ Terminals unused in grammar
     TOKEN_ERROR
 
 
-State 17 conflicts: 1 shift/reduce
+State 15 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -40,90 +40,88 @@ Grammar
    20 command_return: KW_RETORNE expression
 
    21 var_decl: type_key_word TK_IDENTIFIER '=' expression ';'
-   22         | vetor_decl ';'
+   22         | type_key_word TK_IDENTIFIER '[' expression ']' list_expression ';'
 
    23 function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl
 
    24 block_decl: '{' list_commands '}'
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression
+   25 list_expression: list_expression expression
+   26                | %empty
 
-   26 list_expression: list_expression expression
-   27                | %empty
+   27 expression: type_literal
+   28           | TK_IDENTIFIER
+   29           | KW_ENTRADA
+   30           | TK_IDENTIFIER '(' list_expression ')'
+   31           | TK_IDENTIFIER '[' expression ']'
+   32           | '(' expression ')'
+   33           | expression '+' expression
+   34           | expression '-' expression
+   35           | expression '*' expression
+   36           | expression '/' expression
+   37           | expression '>' expression
+   38           | expression OPERATOR_GE expression
+   39           | expression '<' expression
+   40           | expression OPERATOR_LE expression
+   41           | expression OPERATOR_DIF expression
+   42           | expression OPERATOR_EQ expression
+   43           | expression '&' expression
+   44           | expression '|' expression
+   45           | '~' expression
 
-   28 expression: type_literal
-   29           | TK_IDENTIFIER
-   30           | KW_ENTRADA
-   31           | TK_IDENTIFIER '(' list_expression ')'
-   32           | TK_IDENTIFIER '[' expression ']'
-   33           | '(' expression ')'
-   34           | expression '+' expression
-   35           | expression '-' expression
-   36           | expression '*' expression
-   37           | expression '/' expression
-   38           | expression '>' expression
-   39           | expression OPERATOR_GE expression
-   40           | expression '<' expression
-   41           | expression OPERATOR_LE expression
-   42           | expression OPERATOR_DIF expression
-   43           | expression OPERATOR_EQ expression
-   44           | expression '&' expression
-   45           | expression '|' expression
-   46           | '~' expression
+   46 type_key_word: KW_CARA
+   47              | KW_INTE
+   48              | KW_REAL
 
-   47 type_key_word: KW_CARA
-   48              | KW_INTE
-   49              | KW_REAL
+   49 type_literal: LIT_CHAR
+   50             | LIT_FLOAT
+   51             | LIT_INTEIRO
+   52             | LIT_STRING
 
-   50 type_literal: LIT_CHAR
-   51             | LIT_FLOAT
-   52             | LIT_INTEIRO
-   53             | LIT_STRING
-
-   54 ident_list: ident_list type_key_word TK_IDENTIFIER
-   55           | %empty
+   53 ident_list: ident_list type_key_word TK_IDENTIFIER
+   54           | %empty
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '&' (38) 44
-    '(' (40) 17 18 19 23 31 33
-    ')' (41) 17 18 19 23 31 33
-    '*' (42) 36
-    '+' (43) 34
-    '-' (45) 35
-    '/' (47) 37
+    '&' (38) 43
+    '(' (40) 17 18 19 23 30 32
+    ')' (41) 17 18 19 23 30 32
+    '*' (42) 35
+    '+' (43) 33
+    '-' (45) 34
+    '/' (47) 36
     ';' (59) 5 21 22
-    '<' (60) 40
+    '<' (60) 39
     '=' (61) 14 15 21
-    '>' (62) 38
-    '[' (91) 15 25 32
-    ']' (93) 15 25 32
+    '>' (62) 37
+    '[' (91) 15 22 31
+    ']' (93) 15 22 31
     '{' (123) 24
-    '|' (124) 45
+    '|' (124) 44
     '}' (125) 24
-    '~' (126) 46
+    '~' (126) 45
     error (256)
-    KW_CARA (258) 47
-    KW_INTE (259) 48
-    KW_REAL (260) 49
+    KW_CARA (258) 46
+    KW_INTE (259) 47
+    KW_REAL (260) 48
     KW_SE (261) 17 18
     KW_ENTAUM (262) 17 18
     KW_SENAUM (263) 18
     KW_ENQUANTO (264) 19
-    KW_ENTRADA (265) 30
+    KW_ENTRADA (265) 29
     KW_ESCREVA (266) 16
     KW_RETORNE (267) 20
-    OPERATOR_LE (268) 41
-    OPERATOR_GE (269) 39
-    OPERATOR_EQ (270) 43
-    OPERATOR_DIF (271) 42
-    TK_IDENTIFIER (272) 14 15 21 23 25 29 31 32 54
-    LIT_INTEIRO <symbol> (273) 52
-    LIT_FLOAT (274) 51
-    LIT_CHAR (275) 50
-    LIT_STRING (276) 53
+    OPERATOR_LE (268) 40
+    OPERATOR_GE (269) 38
+    OPERATOR_EQ (270) 42
+    OPERATOR_DIF (271) 41
+    TK_IDENTIFIER <symbol> (272) 14 15 21 22 23 28 30 31 53
+    LIT_INTEIRO <symbol> (273) 51
+    LIT_FLOAT <symbol> (274) 50
+    LIT_CHAR <symbol> (275) 49
+    LIT_STRING <symbol> (276) 52
     TOKEN_ERROR (277)
 
 
@@ -131,10 +129,10 @@ Nonterminals, with rules where they appear
 
     $accept (40)
         on left: 0
-    program (41)
+    program <ast> (41)
         on left: 1
         on right: 0
-    list_decl (42)
+    list_decl <ast> (42)
         on left: 2 3 4
         on right: 1 2 3
     list_commands (43)
@@ -158,33 +156,30 @@ Nonterminals, with rules where they appear
     command_return (49)
         on left: 20
         on right: 12
-    var_decl (50)
+    var_decl <ast> (50)
         on left: 21 22
         on right: 2
-    function_decl (51)
+    function_decl <ast> (51)
         on left: 23
         on right: 3
     block_decl (52)
         on left: 24
         on right: 9 23
-    vetor_decl (53)
-        on left: 25
-        on right: 22
-    list_expression (54)
-        on left: 26 27
-        on right: 16 25 26 31
-    expression (55)
-        on left: 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46
-        on right: 14 15 17 18 19 20 21 25 26 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46
-    type_key_word (56)
-        on left: 47 48 49
-        on right: 21 23 25 54
-    type_literal (57)
-        on left: 50 51 52 53
-        on right: 28
-    ident_list (58)
-        on left: 54 55
-        on right: 23 54
+    list_expression <ast> (53)
+        on left: 25 26
+        on right: 16 22 25 30
+    expression <ast> (54)
+        on left: 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45
+        on right: 14 15 17 18 19 20 21 22 25 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45
+    type_key_word <type> (55)
+        on left: 46 47 48
+        on right: 21 22 23 53
+    type_literal <symbol> (56)
+        on left: 49 50 51 52
+        on right: 27
+    ident_list (57)
+        on left: 53 54
+        on right: 23 53
 
 
 State 0
@@ -218,8 +213,7 @@ State 2
 
     var_decl       go to state 7
     function_decl  go to state 8
-    vetor_decl     go to state 9
-    type_key_word  go to state 10
+    type_key_word  go to state 9
 
 
 State 3
@@ -231,23 +225,23 @@ State 3
 
 State 4
 
-   47 type_key_word: KW_CARA .
+   46 type_key_word: KW_CARA .
 
-    $default  reduce using rule 47 (type_key_word)
+    $default  reduce using rule 46 (type_key_word)
 
 
 State 5
 
-   48 type_key_word: KW_INTE .
+   47 type_key_word: KW_INTE .
 
-    $default  reduce using rule 48 (type_key_word)
+    $default  reduce using rule 47 (type_key_word)
 
 
 State 6
 
-   49 type_key_word: KW_REAL .
+   48 type_key_word: KW_REAL .
 
-    $default  reduce using rule 49 (type_key_word)
+    $default  reduce using rule 48 (type_key_word)
 
 
 State 7
@@ -266,1587 +260,1579 @@ State 8
 
 State 9
 
-   22 var_decl: vetor_decl . ';'
+   21 var_decl: type_key_word . TK_IDENTIFIER '=' expression ';'
+   22         | type_key_word . TK_IDENTIFIER '[' expression ']' list_expression ';'
+   23 function_decl: type_key_word . TK_IDENTIFIER '(' ident_list ')' block_decl
 
-    ';'  shift, and go to state 11
+    TK_IDENTIFIER  shift, and go to state 10
 
 
 State 10
 
-   21 var_decl: type_key_word . TK_IDENTIFIER '=' expression ';'
-   23 function_decl: type_key_word . TK_IDENTIFIER '(' ident_list ')' block_decl
-   25 vetor_decl: type_key_word . TK_IDENTIFIER '[' expression ']' list_expression
+   21 var_decl: type_key_word TK_IDENTIFIER . '=' expression ';'
+   22         | type_key_word TK_IDENTIFIER . '[' expression ']' list_expression ';'
+   23 function_decl: type_key_word TK_IDENTIFIER . '(' ident_list ')' block_decl
 
-    TK_IDENTIFIER  shift, and go to state 12
+    '='  shift, and go to state 11
+    '['  shift, and go to state 12
+    '('  shift, and go to state 13
 
 
 State 11
 
-   22 var_decl: vetor_decl ';' .
+   21 var_decl: type_key_word TK_IDENTIFIER '=' . expression ';'
 
-    $default  reduce using rule 22 (var_decl)
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 22
+    type_literal  go to state 23
 
 
 State 12
 
-   21 var_decl: type_key_word TK_IDENTIFIER . '=' expression ';'
-   23 function_decl: type_key_word TK_IDENTIFIER . '(' ident_list ')' block_decl
-   25 vetor_decl: type_key_word TK_IDENTIFIER . '[' expression ']' list_expression
+   22 var_decl: type_key_word TK_IDENTIFIER '[' . expression ']' list_expression ';'
 
-    '='  shift, and go to state 13
-    '['  shift, and go to state 14
-    '('  shift, and go to state 15
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 24
+    type_literal  go to state 23
 
 
 State 13
 
-   21 var_decl: type_key_word TK_IDENTIFIER '=' . expression ';'
+   23 function_decl: type_key_word TK_IDENTIFIER '(' . ident_list ')' block_decl
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    $default  reduce using rule 54 (ident_list)
 
-    expression    go to state 24
-    type_literal  go to state 25
+    ident_list  go to state 25
 
 
 State 14
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' . expression ']' list_expression
+   29 expression: KW_ENTRADA .
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 26
-    type_literal  go to state 25
+    $default  reduce using rule 29 (expression)
 
 
 State 15
 
-   23 function_decl: type_key_word TK_IDENTIFIER '(' . ident_list ')' block_decl
+   28 expression: TK_IDENTIFIER .
+   30           | TK_IDENTIFIER . '(' list_expression ')'
+   31           | TK_IDENTIFIER . '[' expression ']'
 
-    $default  reduce using rule 55 (ident_list)
+    '['  shift, and go to state 26
+    '('  shift, and go to state 27
 
-    ident_list  go to state 27
+    '('       [reduce using rule 28 (expression)]
+    $default  reduce using rule 28 (expression)
 
 
 State 16
 
-   30 expression: KW_ENTRADA .
-
-    $default  reduce using rule 30 (expression)
-
-
-State 17
-
-   29 expression: TK_IDENTIFIER .
-   31           | TK_IDENTIFIER . '(' list_expression ')'
-   32           | TK_IDENTIFIER . '[' expression ']'
-
-    '['  shift, and go to state 28
-    '('  shift, and go to state 29
-
-    '('       [reduce using rule 29 (expression)]
-    $default  reduce using rule 29 (expression)
-
-
-State 18
-
-   52 type_literal: LIT_INTEIRO .
-
-    $default  reduce using rule 52 (type_literal)
-
-
-State 19
-
-   51 type_literal: LIT_FLOAT .
+   51 type_literal: LIT_INTEIRO .
 
     $default  reduce using rule 51 (type_literal)
 
 
-State 20
+State 17
 
-   50 type_literal: LIT_CHAR .
+   50 type_literal: LIT_FLOAT .
 
     $default  reduce using rule 50 (type_literal)
 
 
+State 18
+
+   49 type_literal: LIT_CHAR .
+
+    $default  reduce using rule 49 (type_literal)
+
+
+State 19
+
+   52 type_literal: LIT_STRING .
+
+    $default  reduce using rule 52 (type_literal)
+
+
+State 20
+
+   45 expression: '~' . expression
+
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 28
+    type_literal  go to state 23
+
+
 State 21
 
-   53 type_literal: LIT_STRING .
+   32 expression: '(' . expression ')'
 
-    $default  reduce using rule 53 (type_literal)
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 29
+    type_literal  go to state 23
 
 
 State 22
 
-   46 expression: '~' . expression
+   21 var_decl: type_key_word TK_IDENTIFIER '=' expression . ';'
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 30
-    type_literal  go to state 25
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+    ';'           shift, and go to state 42
 
 
 State 23
 
-   33 expression: '(' . expression ')'
+   27 expression: type_literal .
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 31
-    type_literal  go to state 25
+    $default  reduce using rule 27 (expression)
 
 
 State 24
 
-   21 var_decl: type_key_word TK_IDENTIFIER '=' expression . ';'
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   22 var_decl: type_key_word TK_IDENTIFIER '[' expression . ']' list_expression ';'
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-    ';'           shift, and go to state 44
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+    ']'           shift, and go to state 43
 
 
 State 25
 
-   28 expression: type_literal .
-
-    $default  reduce using rule 28 (expression)
-
-
-State 26
-
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression . ']' list_expression
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-    ']'           shift, and go to state 45
-
-
-State 27
-
    23 function_decl: type_key_word TK_IDENTIFIER '(' ident_list . ')' block_decl
-   54 ident_list: ident_list . type_key_word TK_IDENTIFIER
+   53 ident_list: ident_list . type_key_word TK_IDENTIFIER
 
     KW_CARA  shift, and go to state 4
     KW_INTE  shift, and go to state 5
     KW_REAL  shift, and go to state 6
-    ')'      shift, and go to state 46
+    ')'      shift, and go to state 44
 
-    type_key_word  go to state 47
+    type_key_word  go to state 45
+
+
+State 26
+
+   31 expression: TK_IDENTIFIER '[' . expression ']'
+
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 46
+    type_literal  go to state 23
+
+
+State 27
+
+   30 expression: TK_IDENTIFIER '(' . list_expression ')'
+
+    $default  reduce using rule 26 (list_expression)
+
+    list_expression  go to state 47
 
 
 State 28
 
-   32 expression: TK_IDENTIFIER '[' . expression ']'
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+   45           | '~' expression .
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
 
-    expression    go to state 48
-    type_literal  go to state 25
+    $default  reduce using rule 45 (expression)
 
 
 State 29
 
-   31 expression: TK_IDENTIFIER '(' . list_expression ')'
+   32 expression: '(' expression . ')'
+   33           | expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    $default  reduce using rule 27 (list_expression)
-
-    list_expression  go to state 49
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+    ')'           shift, and go to state 48
 
 
 State 30
 
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-   46           | '~' expression .
+   40 expression: expression OPERATOR_LE . expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
-    $default  reduce using rule 46 (expression)
+    expression    go to state 49
+    type_literal  go to state 23
 
 
 State 31
 
-   33 expression: '(' expression . ')'
-   34           | expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   38 expression: expression OPERATOR_GE . expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-    ')'           shift, and go to state 50
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 50
+    type_literal  go to state 23
 
 
 State 32
 
-   41 expression: expression OPERATOR_LE . expression
+   42 expression: expression OPERATOR_EQ . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 51
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 33
 
-   39 expression: expression OPERATOR_GE . expression
+   41 expression: expression OPERATOR_DIF . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 52
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 34
 
-   43 expression: expression OPERATOR_EQ . expression
+   33 expression: expression '+' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 53
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 35
 
-   42 expression: expression OPERATOR_DIF . expression
+   34 expression: expression '-' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 54
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 36
 
-   34 expression: expression '+' . expression
+   35 expression: expression '*' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 55
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 37
 
-   35 expression: expression '-' . expression
+   36 expression: expression '/' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 56
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 38
 
-   36 expression: expression '*' . expression
+   43 expression: expression '&' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 57
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 39
 
-   37 expression: expression '/' . expression
+   44 expression: expression '|' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 58
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 40
 
-   44 expression: expression '&' . expression
+   39 expression: expression '<' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 59
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 41
 
-   45 expression: expression '|' . expression
+   37 expression: expression '>' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 60
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 42
-
-   40 expression: expression '<' . expression
-
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 61
-    type_literal  go to state 25
-
-
-State 43
-
-   38 expression: expression '>' . expression
-
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 62
-    type_literal  go to state 25
-
-
-State 44
 
    21 var_decl: type_key_word TK_IDENTIFIER '=' expression ';' .
 
     $default  reduce using rule 21 (var_decl)
 
 
+State 43
+
+   22 var_decl: type_key_word TK_IDENTIFIER '[' expression ']' . list_expression ';'
+
+    $default  reduce using rule 26 (list_expression)
+
+    list_expression  go to state 61
+
+
+State 44
+
+   23 function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' . block_decl
+
+    '{'  shift, and go to state 62
+
+    block_decl  go to state 63
+
+
 State 45
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' . list_expression
+   53 ident_list: ident_list type_key_word . TK_IDENTIFIER
 
-    $default  reduce using rule 27 (list_expression)
-
-    list_expression  go to state 63
+    TK_IDENTIFIER  shift, and go to state 64
 
 
 State 46
 
-   23 function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' . block_decl
+   31 expression: TK_IDENTIFIER '[' expression . ']'
+   33           | expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    '{'  shift, and go to state 64
-
-    block_decl  go to state 65
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+    ']'           shift, and go to state 65
 
 
 State 47
 
-   54 ident_list: ident_list type_key_word . TK_IDENTIFIER
+   25 list_expression: list_expression . expression
+   30 expression: TK_IDENTIFIER '(' list_expression . ')'
 
-    TK_IDENTIFIER  shift, and go to state 66
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+    ')'            shift, and go to state 66
+
+    expression    go to state 67
+    type_literal  go to state 23
 
 
 State 48
 
-   32 expression: TK_IDENTIFIER '[' expression . ']'
-   34           | expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   32 expression: '(' expression ')' .
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-    ']'           shift, and go to state 67
+    $default  reduce using rule 32 (expression)
 
 
 State 49
 
-   26 list_expression: list_expression . expression
-   31 expression: TK_IDENTIFIER '(' list_expression . ')'
-
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-    ')'            shift, and go to state 68
-
-    expression    go to state 69
-    type_literal  go to state 25
-
-
-State 50
-
-   33 expression: '(' expression ')' .
-
-    $default  reduce using rule 33 (expression)
-
-
-State 51
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   41           | expression OPERATOR_LE expression .
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    $default  reduce using rule 41 (expression)
-
-
-State 52
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   39           | expression OPERATOR_GE expression .
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    $default  reduce using rule 39 (expression)
-
-
-State 53
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   43           | expression OPERATOR_EQ expression .
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    $default  reduce using rule 43 (expression)
-
-
-State 54
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   42           | expression OPERATOR_DIF expression .
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    $default  reduce using rule 42 (expression)
-
-
-State 55
-
-   34 expression: expression . '+' expression
-   34           | expression '+' expression .
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-
-    $default  reduce using rule 34 (expression)
-
-
-State 56
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   35           | expression '-' expression .
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-
-    $default  reduce using rule 35 (expression)
-
-
-State 57
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   36           | expression '*' expression .
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-
-    $default  reduce using rule 36 (expression)
-
-
-State 58
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   37           | expression '/' expression .
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-
-    $default  reduce using rule 37 (expression)
-
-
-State 59
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   44           | expression '&' expression .
-   45           | expression . '|' expression
-
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-
-    $default  reduce using rule 44 (expression)
-
-
-State 60
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-   45           | expression '|' expression .
-
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-
-    $default  reduce using rule 45 (expression)
-
-
-State 61
-
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   40           | expression '<' expression .
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   40           | expression OPERATOR_LE expression .
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
     $default  reduce using rule 40 (expression)
 
 
-State 62
+State 50
 
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   38           | expression '>' expression .
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   38           | expression OPERATOR_GE expression .
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
     $default  reduce using rule 38 (expression)
 
 
-State 63
+State 51
 
-   25 vetor_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression .
-   26 list_expression: list_expression . expression
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   42           | expression OPERATOR_EQ expression .
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    $default  reduce using rule 25 (vetor_decl)
-
-    expression    go to state 69
-    type_literal  go to state 25
+    $default  reduce using rule 42 (expression)
 
 
-State 64
+State 52
+
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   41           | expression OPERATOR_DIF expression .
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+
+    $default  reduce using rule 41 (expression)
+
+
+State 53
+
+   33 expression: expression . '+' expression
+   33           | expression '+' expression .
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+
+    $default  reduce using rule 33 (expression)
+
+
+State 54
+
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   34           | expression '-' expression .
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+
+    $default  reduce using rule 34 (expression)
+
+
+State 55
+
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   35           | expression '*' expression .
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+
+    $default  reduce using rule 35 (expression)
+
+
+State 56
+
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   36           | expression '/' expression .
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+
+    $default  reduce using rule 36 (expression)
+
+
+State 57
+
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   43           | expression '&' expression .
+   44           | expression . '|' expression
+
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+
+    $default  reduce using rule 43 (expression)
+
+
+State 58
+
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+   44           | expression '|' expression .
+
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+
+    $default  reduce using rule 44 (expression)
+
+
+State 59
+
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   39           | expression '<' expression .
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+
+    $default  reduce using rule 39 (expression)
+
+
+State 60
+
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   37           | expression '>' expression .
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+
+    $default  reduce using rule 37 (expression)
+
+
+State 61
+
+   22 var_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression . ';'
+   25 list_expression: list_expression . expression
+
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    ';'            shift, and go to state 68
+    '('            shift, and go to state 21
+
+    expression    go to state 67
+    type_literal  go to state 23
+
+
+State 62
 
    24 block_decl: '{' . list_commands '}'
 
-    KW_ENTAUM      shift, and go to state 70
-    KW_ESCREVA     shift, and go to state 71
-    KW_RETORNE     shift, and go to state 72
-    TK_IDENTIFIER  shift, and go to state 73
-    '{'            shift, and go to state 64
+    KW_ENTAUM      shift, and go to state 69
+    KW_ESCREVA     shift, and go to state 70
+    KW_RETORNE     shift, and go to state 71
+    TK_IDENTIFIER  shift, and go to state 72
+    '{'            shift, and go to state 62
 
     $default  reduce using rule 13 (command)
 
-    list_commands     go to state 74
-    command           go to state 75
-    assingment        go to state 76
-    command_escreva   go to state 77
-    command_senaum    go to state 78
-    command_enquanto  go to state 79
-    command_return    go to state 80
-    block_decl        go to state 81
+    list_commands     go to state 73
+    command           go to state 74
+    assingment        go to state 75
+    command_escreva   go to state 76
+    command_senaum    go to state 77
+    command_enquanto  go to state 78
+    command_return    go to state 79
+    block_decl        go to state 80
 
 
-State 65
+State 63
 
    23 function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl .
 
     $default  reduce using rule 23 (function_decl)
 
 
-State 66
+State 64
 
-   54 ident_list: ident_list type_key_word TK_IDENTIFIER .
+   53 ident_list: ident_list type_key_word TK_IDENTIFIER .
 
-    $default  reduce using rule 54 (ident_list)
-
-
-State 67
-
-   32 expression: TK_IDENTIFIER '[' expression ']' .
-
-    $default  reduce using rule 32 (expression)
+    $default  reduce using rule 53 (ident_list)
 
 
-State 68
+State 65
 
-   31 expression: TK_IDENTIFIER '(' list_expression ')' .
+   31 expression: TK_IDENTIFIER '[' expression ']' .
 
     $default  reduce using rule 31 (expression)
 
 
+State 66
+
+   30 expression: TK_IDENTIFIER '(' list_expression ')' .
+
+    $default  reduce using rule 30 (expression)
+
+
+State 67
+
+   25 list_expression: list_expression expression .
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
+
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+
+    $default  reduce using rule 25 (list_expression)
+
+
+State 68
+
+   22 var_decl: type_key_word TK_IDENTIFIER '[' expression ']' list_expression ';' .
+
+    $default  reduce using rule 22 (var_decl)
+
+
 State 69
-
-   26 list_expression: list_expression expression .
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
-
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-
-    $default  reduce using rule 26 (list_expression)
-
-
-State 70
 
    17 command_senaum: KW_ENTAUM . command KW_SE '(' expression ')'
    18               | KW_ENTAUM . command KW_SENAUM command KW_SE '(' expression ')'
 
-    KW_ENTAUM      shift, and go to state 70
-    KW_ESCREVA     shift, and go to state 71
-    KW_RETORNE     shift, and go to state 72
-    TK_IDENTIFIER  shift, and go to state 73
-    '{'            shift, and go to state 64
+    KW_ENTAUM      shift, and go to state 69
+    KW_ESCREVA     shift, and go to state 70
+    KW_RETORNE     shift, and go to state 71
+    TK_IDENTIFIER  shift, and go to state 72
+    '{'            shift, and go to state 62
 
     $default  reduce using rule 13 (command)
 
-    command           go to state 82
-    assingment        go to state 76
-    command_escreva   go to state 77
-    command_senaum    go to state 78
-    command_enquanto  go to state 79
-    command_return    go to state 80
-    block_decl        go to state 81
+    command           go to state 81
+    assingment        go to state 75
+    command_escreva   go to state 76
+    command_senaum    go to state 77
+    command_enquanto  go to state 78
+    command_return    go to state 79
+    block_decl        go to state 80
+
+
+State 70
+
+   16 command_escreva: KW_ESCREVA . list_expression
+
+    $default  reduce using rule 26 (list_expression)
+
+    list_expression  go to state 82
 
 
 State 71
 
-   16 command_escreva: KW_ESCREVA . list_expression
+   20 command_return: KW_RETORNE . expression
 
-    $default  reduce using rule 27 (list_expression)
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
-    list_expression  go to state 83
+    expression    go to state 83
+    type_literal  go to state 23
 
 
 State 72
 
-   20 command_return: KW_RETORNE . expression
+   14 assingment: TK_IDENTIFIER . '=' expression
+   15           | TK_IDENTIFIER . '[' expression ']' '=' expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 84
-    type_literal  go to state 25
+    '='  shift, and go to state 84
+    '['  shift, and go to state 85
 
 
 State 73
 
-   14 assingment: TK_IDENTIFIER . '=' expression
-   15           | TK_IDENTIFIER . '[' expression ']' '=' expression
+    5 list_commands: list_commands . ';' command
+   24 block_decl: '{' list_commands . '}'
 
-    '='  shift, and go to state 85
-    '['  shift, and go to state 86
+    ';'  shift, and go to state 86
+    '}'  shift, and go to state 87
 
 
 State 74
 
-    5 list_commands: list_commands . ';' command
-   24 block_decl: '{' list_commands . '}'
-
-    ';'  shift, and go to state 87
-    '}'  shift, and go to state 88
-
-
-State 75
-
     6 list_commands: command .
    19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
 
-    KW_ENQUANTO  shift, and go to state 89
+    KW_ENQUANTO  shift, and go to state 88
 
     $default  reduce using rule 6 (list_commands)
 
 
-State 76
+State 75
 
     7 command: assingment .
 
     $default  reduce using rule 7 (command)
 
 
-State 77
+State 76
 
     8 command: command_escreva .
 
     $default  reduce using rule 8 (command)
 
 
-State 78
+State 77
 
    10 command: command_senaum .
 
     $default  reduce using rule 10 (command)
 
 
-State 79
+State 78
 
    11 command: command_enquanto .
 
     $default  reduce using rule 11 (command)
 
 
-State 80
+State 79
 
    12 command: command_return .
 
     $default  reduce using rule 12 (command)
 
 
-State 81
+State 80
 
     9 command: block_decl .
 
     $default  reduce using rule 9 (command)
 
 
-State 82
+State 81
 
    17 command_senaum: KW_ENTAUM command . KW_SE '(' expression ')'
    18               | KW_ENTAUM command . KW_SENAUM command KW_SE '(' expression ')'
    19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
 
-    KW_SE        shift, and go to state 90
-    KW_SENAUM    shift, and go to state 91
-    KW_ENQUANTO  shift, and go to state 89
+    KW_SE        shift, and go to state 89
+    KW_SENAUM    shift, and go to state 90
+    KW_ENQUANTO  shift, and go to state 88
+
+
+State 82
+
+   16 command_escreva: KW_ESCREVA list_expression .
+   25 list_expression: list_expression . expression
+
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    $default  reduce using rule 16 (command_escreva)
+
+    expression    go to state 67
+    type_literal  go to state 23
 
 
 State 83
 
-   16 command_escreva: KW_ESCREVA list_expression .
-   26 list_expression: list_expression . expression
-
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    $default  reduce using rule 16 (command_escreva)
-
-    expression    go to state 69
-    type_literal  go to state 25
-
-
-State 84
-
    20 command_return: KW_RETORNE expression .
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
 
     $default  reduce using rule 20 (command_return)
 
 
-State 85
+State 84
 
    14 assingment: TK_IDENTIFIER '=' . expression
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 91
+    type_literal  go to state 23
+
+
+State 85
+
+   15 assingment: TK_IDENTIFIER '[' . expression ']' '=' expression
+
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 92
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 86
 
-   15 assingment: TK_IDENTIFIER '[' . expression ']' '=' expression
-
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 93
-    type_literal  go to state 25
-
-
-State 87
-
     5 list_commands: list_commands ';' . command
 
-    KW_ENTAUM      shift, and go to state 70
-    KW_ESCREVA     shift, and go to state 71
-    KW_RETORNE     shift, and go to state 72
-    TK_IDENTIFIER  shift, and go to state 73
-    '{'            shift, and go to state 64
+    KW_ENTAUM      shift, and go to state 69
+    KW_ESCREVA     shift, and go to state 70
+    KW_RETORNE     shift, and go to state 71
+    TK_IDENTIFIER  shift, and go to state 72
+    '{'            shift, and go to state 62
 
     $default  reduce using rule 13 (command)
 
-    command           go to state 94
-    assingment        go to state 76
-    command_escreva   go to state 77
-    command_senaum    go to state 78
-    command_enquanto  go to state 79
-    command_return    go to state 80
-    block_decl        go to state 81
+    command           go to state 93
+    assingment        go to state 75
+    command_escreva   go to state 76
+    command_senaum    go to state 77
+    command_enquanto  go to state 78
+    command_return    go to state 79
+    block_decl        go to state 80
 
 
-State 88
+State 87
 
    24 block_decl: '{' list_commands '}' .
 
     $default  reduce using rule 24 (block_decl)
 
 
-State 89
+State 88
 
    19 command_enquanto: command KW_ENQUANTO . '(' expression ')'
+
+    '('  shift, and go to state 94
+
+
+State 89
+
+   17 command_senaum: KW_ENTAUM command KW_SE . '(' expression ')'
 
     '('  shift, and go to state 95
 
 
 State 90
 
-   17 command_senaum: KW_ENTAUM command KW_SE . '(' expression ')'
+   18 command_senaum: KW_ENTAUM command KW_SENAUM . command KW_SE '(' expression ')'
 
-    '('  shift, and go to state 96
+    KW_ENTAUM      shift, and go to state 69
+    KW_ESCREVA     shift, and go to state 70
+    KW_RETORNE     shift, and go to state 71
+    TK_IDENTIFIER  shift, and go to state 72
+    '{'            shift, and go to state 62
+
+    $default  reduce using rule 13 (command)
+
+    command           go to state 96
+    assingment        go to state 75
+    command_escreva   go to state 76
+    command_senaum    go to state 77
+    command_enquanto  go to state 78
+    command_return    go to state 79
+    block_decl        go to state 80
 
 
 State 91
 
-   18 command_senaum: KW_ENTAUM command KW_SENAUM . command KW_SE '(' expression ')'
-
-    KW_ENTAUM      shift, and go to state 70
-    KW_ESCREVA     shift, and go to state 71
-    KW_RETORNE     shift, and go to state 72
-    TK_IDENTIFIER  shift, and go to state 73
-    '{'            shift, and go to state 64
-
-    $default  reduce using rule 13 (command)
-
-    command           go to state 97
-    assingment        go to state 76
-    command_escreva   go to state 77
-    command_senaum    go to state 78
-    command_enquanto  go to state 79
-    command_return    go to state 80
-    block_decl        go to state 81
-
-
-State 92
-
    14 assingment: TK_IDENTIFIER '=' expression .
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
 
     $default  reduce using rule 14 (assingment)
 
 
-State 93
+State 92
 
    15 assingment: TK_IDENTIFIER '[' expression . ']' '=' expression
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-    ']'           shift, and go to state 98
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+    ']'           shift, and go to state 97
 
 
-State 94
+State 93
 
     5 list_commands: list_commands ';' command .
    19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
 
-    KW_ENQUANTO  shift, and go to state 89
+    KW_ENQUANTO  shift, and go to state 88
 
     $default  reduce using rule 5 (list_commands)
 
 
-State 95
+State 94
 
    19 command_enquanto: command KW_ENQUANTO '(' . expression ')'
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 98
+    type_literal  go to state 23
+
+
+State 95
+
+   17 command_senaum: KW_ENTAUM command KW_SE '(' . expression ')'
+
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
     expression    go to state 99
-    type_literal  go to state 25
+    type_literal  go to state 23
 
 
 State 96
 
-   17 command_senaum: KW_ENTAUM command KW_SE '(' . expression ')'
+   18 command_senaum: KW_ENTAUM command KW_SENAUM command . KW_SE '(' expression ')'
+   19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 100
-    type_literal  go to state 25
+    KW_SE        shift, and go to state 100
+    KW_ENQUANTO  shift, and go to state 88
 
 
 State 97
 
-   18 command_senaum: KW_ENTAUM command KW_SENAUM command . KW_SE '(' expression ')'
-   19 command_enquanto: command . KW_ENQUANTO '(' expression ')'
+   15 assingment: TK_IDENTIFIER '[' expression ']' . '=' expression
 
-    KW_SE        shift, and go to state 101
-    KW_ENQUANTO  shift, and go to state 89
+    '='  shift, and go to state 101
 
 
 State 98
 
-   15 assingment: TK_IDENTIFIER '[' expression ']' . '=' expression
+   19 command_enquanto: command KW_ENQUANTO '(' expression . ')'
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    '='  shift, and go to state 102
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+    ')'           shift, and go to state 102
 
 
 State 99
 
-   19 command_enquanto: command KW_ENQUANTO '(' expression . ')'
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   17 command_senaum: KW_ENTAUM command KW_SE '(' expression . ')'
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
     ')'           shift, and go to state 103
 
 
 State 100
 
-   17 command_senaum: KW_ENTAUM command KW_SE '(' expression . ')'
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE . '(' expression ')'
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-    ')'           shift, and go to state 104
+    '('  shift, and go to state 104
 
 
 State 101
 
-   18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE . '(' expression ')'
+   15 assingment: TK_IDENTIFIER '[' expression ']' '=' . expression
 
-    '('  shift, and go to state 105
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
+
+    expression    go to state 105
+    type_literal  go to state 23
 
 
 State 102
-
-   15 assingment: TK_IDENTIFIER '[' expression ']' '=' . expression
-
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
-
-    expression    go to state 106
-    type_literal  go to state 25
-
-
-State 103
 
    19 command_enquanto: command KW_ENQUANTO '(' expression ')' .
 
     $default  reduce using rule 19 (command_enquanto)
 
 
-State 104
+State 103
 
    17 command_senaum: KW_ENTAUM command KW_SE '(' expression ')' .
 
     $default  reduce using rule 17 (command_senaum)
 
 
-State 105
+State 104
 
    18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE '(' . expression ')'
 
-    KW_ENTRADA     shift, and go to state 16
-    TK_IDENTIFIER  shift, and go to state 17
-    LIT_INTEIRO    shift, and go to state 18
-    LIT_FLOAT      shift, and go to state 19
-    LIT_CHAR       shift, and go to state 20
-    LIT_STRING     shift, and go to state 21
-    '~'            shift, and go to state 22
-    '('            shift, and go to state 23
+    KW_ENTRADA     shift, and go to state 14
+    TK_IDENTIFIER  shift, and go to state 15
+    LIT_INTEIRO    shift, and go to state 16
+    LIT_FLOAT      shift, and go to state 17
+    LIT_CHAR       shift, and go to state 18
+    LIT_STRING     shift, and go to state 19
+    '~'            shift, and go to state 20
+    '('            shift, and go to state 21
 
-    expression    go to state 107
-    type_literal  go to state 25
+    expression    go to state 106
+    type_literal  go to state 23
 
 
-State 106
+State 105
 
    15 assingment: TK_IDENTIFIER '[' expression ']' '=' expression .
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
 
     $default  reduce using rule 15 (assingment)
 
 
-State 107
+State 106
 
    18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE '(' expression . ')'
-   34 expression: expression . '+' expression
-   35           | expression . '-' expression
-   36           | expression . '*' expression
-   37           | expression . '/' expression
-   38           | expression . '>' expression
-   39           | expression . OPERATOR_GE expression
-   40           | expression . '<' expression
-   41           | expression . OPERATOR_LE expression
-   42           | expression . OPERATOR_DIF expression
-   43           | expression . OPERATOR_EQ expression
-   44           | expression . '&' expression
-   45           | expression . '|' expression
+   33 expression: expression . '+' expression
+   34           | expression . '-' expression
+   35           | expression . '*' expression
+   36           | expression . '/' expression
+   37           | expression . '>' expression
+   38           | expression . OPERATOR_GE expression
+   39           | expression . '<' expression
+   40           | expression . OPERATOR_LE expression
+   41           | expression . OPERATOR_DIF expression
+   42           | expression . OPERATOR_EQ expression
+   43           | expression . '&' expression
+   44           | expression . '|' expression
 
-    OPERATOR_LE   shift, and go to state 32
-    OPERATOR_GE   shift, and go to state 33
-    OPERATOR_EQ   shift, and go to state 34
-    OPERATOR_DIF  shift, and go to state 35
-    '+'           shift, and go to state 36
-    '-'           shift, and go to state 37
-    '*'           shift, and go to state 38
-    '/'           shift, and go to state 39
-    '&'           shift, and go to state 40
-    '|'           shift, and go to state 41
-    '<'           shift, and go to state 42
-    '>'           shift, and go to state 43
-    ')'           shift, and go to state 108
+    OPERATOR_LE   shift, and go to state 30
+    OPERATOR_GE   shift, and go to state 31
+    OPERATOR_EQ   shift, and go to state 32
+    OPERATOR_DIF  shift, and go to state 33
+    '+'           shift, and go to state 34
+    '-'           shift, and go to state 35
+    '*'           shift, and go to state 36
+    '/'           shift, and go to state 37
+    '&'           shift, and go to state 38
+    '|'           shift, and go to state 39
+    '<'           shift, and go to state 40
+    '>'           shift, and go to state 41
+    ')'           shift, and go to state 107
 
 
-State 108
+State 107
 
    18 command_senaum: KW_ENTAUM command KW_SENAUM command KW_SE '(' expression ')' .
 

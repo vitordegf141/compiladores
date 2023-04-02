@@ -1,285 +1,34 @@
 Start compiling
-open file : sample_copy.txt
+open file : sample.txt
 COMECOU
 
-identificou list_decl empty
-identificou KW_CARA
-achou =
-identificou LIT_CHAR
-achou ;
-identificou init variavel
-identificou list_decl var_decl
-identificou KW_CARA
-achou =
-identificou LIT_INTEIRO
-achou ;
-identificou init variavel
-identificou list_decl var_decl
-identificou KW_INTE
-achou =
-identificou LIT_CHAR
-achou ;
-identificou init variavel
-identificou list_decl var_decl
-identificou KW_CARA
-achou =
-identificou LIT_INTEIRO
-achou ;
-identificou init variavel
-identificou list_decl var_decl
-identificou KW_INTE
-achou [
-identificou LIT_INTEIRO
-achou ]
-identificou LIT_CHAR
-identificou expression
-identificou LIT_INTEIRO
-identificou list_expression expression 
-identificou LIT_INTEIRO
-identificou list_expression expression 
-identificou LIT_INTEIRO
-identificou list_expression expression 
-identificou LIT_INTEIRO
-identificou list_expression expression 
-identificou LIT_INTEIRO
-identificou list_expression expression 
-identificou LIT_INTEIRO
-identificou list_expression expression 
-identificou LIT_INTEIRO
-identificou list_expression expression 
-identificou LIT_INTEIRO
-identificou list_expression expression 
-identificou LIT_INTEIRO
-achou ;
-identificou list_expression expression 
-identificou decl init vetor
-identificou decl vetor
-identificou list_decl var_decl
-identificou KW_INTE
-achou [
-identificou LIT_INTEIRO
-achou ]
-achou ;
-identificou just decl vetor
-identificou decl vetor
-identificou list_decl var_decl
-identificou KW_REAL
-achou =
-identificou LIT_FLOAT
-achou ;
-identificou init variavel
-identificou list_decl var_decl
-identificou KW_INTE
-achou (
-achou )
-identificou ident_list empty
-achou {
-achou =
-identificou LIT_INTEIRO
-achou ;
-identificou assingment command
-identificou single command in list_commands
-achou =
-achou -
-achou ;
-identificou assingment command
-identificou list_commands command
-achou =
-identificou LIT_INTEIRO
-achou ;
-identificou assingment command
-identificou list_commands command
-achou [
-achou ]
-achou =
-identificou LIT_INTEIRO
-achou ;
-identificou assingment command
-identificou list_commands command
-achou [
-identificou LIT_INTEIRO
-achou ]
-achou ;
-identificou expression
-identificou command_escreva command
-identificou list_commands command
-achou ;
-identificou expression
-identificou command_escreva command
-identificou list_commands command
-achou =
-identificou LIT_INTEIRO
-achou ;
-identificou assingment command
-identificou list_commands command
-identificou LIT_STRING
-identificou expression
-achou ;
-identificou list_expression expression 
-identificou command_escreva command
-identificou list_commands command
-achou =
-achou ;
-identificou assingment command
-identificou list_commands command
-identificou LIT_STRING
-achou ;
-identificou expression
-identificou command_escreva command
-identificou list_commands command
-achou {
-achou =
-achou (
-identificou expression
-identificou LIT_INTEIRO
-achou )
-identificou list_expression expression 
-achou ;
-identificou assingment command
-identificou single command in list_commands
-achou =
-achou (
-identificou expression
-achou )
-identificou list_expression expression 
-achou ;
-identificou assingment command
-identificou list_commands command
-achou }
-identificou vazio command
-identificou list_commands command
-identificou block_decl command
-achou (
-achou <
-identificou LIT_INTEIRO
-achou )
-identificou command_enquanto command
-achou ;
-identificou list_commands command
-identificou LIT_STRING
-achou (
-identificou expression
-identificou LIT_INTEIRO
-achou +
-achou )
-achou *
-identificou list_expression expression 
-identificou LIT_STRING
-achou ;
-identificou list_expression expression 
-identificou command_escreva command
-identificou list_commands command
-achou {
-achou =
-achou +
-identificou LIT_INTEIRO
-achou ;
-identificou assingment command
-identificou single command in list_commands
-identificou LIT_STRING
-achou ;
-identificou expression
-identificou command_escreva command
-identificou list_commands command
-achou }
-identificou vazio command
-identificou list_commands command
-identificou block_decl command
-achou (
-achou OPERATOR_EQ
-identificou LIT_INTEIRO
-achou )
-identificou command_senaum command
-achou ;
-identificou list_commands command
-achou {
-identificou LIT_STRING
-achou }
-identificou expression
-identificou command_escreva command
-identificou single command in list_commands
-identificou block_decl command
-identificou LIT_STRING
-identificou expression
-identificou command_escreva command
-achou (
-achou OPERATOR_EQ
-identificou LIT_INTEIRO
-achou )
-identificou command_senaum command
-achou ;
-identificou list_commands command
-achou {
-achou {
-achou }
-identificou vazio command
-identificou single command in list_commands
-identificou block_decl command
-achou }
-identificou single command in list_commands
-identificou block_decl command
-achou }
-identificou list_commands command
-identificou function_decl
-identificou list_decl function_decl
-identificou KW_INTE
-achou (
-identificou KW_INTE
-identificou type_key_word TK_IDENTIFIER TK_IDENTIFIER
-identificou KW_INTE
-identificou type_key_word TK_IDENTIFIER TK_IDENTIFIER
-achou )
-identificou ident_list ident_list
-achou {
-achou +
-achou }
-identificou command_return command
-identificou single command in list_commands
-identificou function_decl
-identificou list_decl function_decl
-identificou program
+achou LIT_CHAR, simbol name = literal_0, value= a
+achou LIT_INTEIRO, simbol name = literal_1, value= 123
+achou LIT_STRING, simbol name = literal_2, value= as
+
+achou LIT_INTEIRO, simbol name = literal_3, value= 1
+achou LIT_INTEIRO, simbol name = literal_4, value= 7
+achou LIT_INTEIRO, simbol name = literal_5, value= 1
 result é o que? 0
 SUCCESSFUL it is a program !
-line counting : 59
+line counting : 9
 
 *********hash********
 
 begin
 
-	10	
-	276
-	48	0	2
-	49	1	2
-	50	2	2
-	53	5	2
-	65	A	275
-	97	10	2
-	99	c	1
-	100	d	1
-	102	f	1
-	105	i	1
-	106	55	2
-	110	n	1
-	114	Digite mais um numero: 
-	276
-	118	v	1
-	120	x	275
-	145	100	2
-	149	2.5	2
-	196	a.5	1
-	197	OK!
-	276
-	213	Incrementado algumas vezes a fica 	276
-	421	main	1
-	424	incn	1
-	448	test	1
-	582	A era=15
-	276
-	653	Digite um numero: 
-	276
-	661	matrix	1
-	735	Nao tem como isso...
-	276
+	49	literal_3	273	value=1
+	55	literal_4	273	value=7
+	97	literal_0	275	value=a
+	150	literal_1	273	value=123
+	192	a.1	272
+	222	literal_2	276	value=as
+
+	335	vet	272
+	370	kkk1	272
+	385	ve2t	272
+	534	verde	272
+	636	funcao	272
 end
 
 *******end hash******

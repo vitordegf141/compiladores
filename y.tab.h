@@ -101,8 +101,9 @@ union YYSTYPE
 
     Hash_node *symbol;
     Ast *ast;
+    int type;
 
-#line 106 "y.tab.h"
+#line 107 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

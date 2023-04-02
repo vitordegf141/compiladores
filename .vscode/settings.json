@@ -3,6 +3,7 @@
         "*.l": "c",
         "y.tab.h": "c",
         "string.h": "c",
-        "ast.h": "c"
+        "ast.h": "c",
+        "hash.h": "c"
     }
 }

@@ -3,7 +3,8 @@
 #include "hash.h"
 #include "y.tab.h"
 
-
+extern FILE *yyin;
+extern FILE *yyout;
 int decode(int token)
 {
     switch (token)
@@ -108,16 +109,28 @@ int main(int argc, char *args[])
     if(argc == 2)
     {
         filename = args[1];
-        printf("open file : %s\n",filename);
+        printf("yyin file : %s\n",filename);
+        yyin = fopen(filename,"r");
+        printf("yyout: NULL, NOT DECOMPILING");
+        yyout = NULL;
     }
-    if(argc >= 3)
+    if(argc == 3)
+    {
+        filename = args[1];
+        printf("yyin file : %s\n",filename);
+        yyin = fopen(filename,"r");
+        filename = args[2];
+        printf("yyout: file : %s\n",filename);
+        yyout = fopen(filename,"w");
+    }
+    if(argc > 3)
     {
         printf("Too many arguments");
         return 0;
     }
     int result;
     printf("COMECOU\n");
-    yyin = fopen(filename,"r");
+    
 
     if(yyin == NULL)
     {
