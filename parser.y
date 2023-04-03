@@ -48,6 +48,7 @@ int yyerror(const char *);
 %type<symbol> type_literal
 %type<ast> expression
 %type<ast> list_expression
+%type<ast> ident_list
 %left '+' '-'
 %left '*' '/'
 %left '&' '|' '~'
@@ -87,11 +88,11 @@ command_enquanto: command KW_ENQUANTO '(' expression ')'
     ;
 command_return: KW_RETORNE expression
     ;
-var_decl: type_key_word TK_IDENTIFIER '=' expression ';'  {printf("\n achou var_decl");$$ = Create_ast(var_decl,$1,$2,$4,NULL,NULL,NULL);}
-    | type_key_word TK_IDENTIFIER '[' expression ']' list_expression  ';' {printf("\n achou vetor_decl");$$ = Create_ast(vector_decl,$1,$2,$4,$6,NULL,NULL);}
+var_decl: type_key_word TK_IDENTIFIER '=' expression ';'  {$$ = Create_ast(var_decl,$1,$2,$4,NULL,NULL,NULL);}
+    | type_key_word TK_IDENTIFIER '[' expression ']' list_expression  ';' {$$ = Create_ast(vector_decl,$1,$2,$4,$6,NULL,NULL);}
     ;
 
-function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl {printf("\n achou function_decl");$$ = Create_ast(function_decl,$1,$2,NULL,NULL,NULL,NULL);}
+function_decl: type_key_word TK_IDENTIFIER '(' ident_list ')' block_decl {$$ = Create_ast(function_decl,$1,$2,$4,NULL,NULL,NULL);}
     ;
 block_decl: '{' list_commands '}' 
     ;
@@ -120,19 +121,19 @@ expression: type_literal {$$ = Create_ast(expression_var,$1->type,$1,NULL,NULL,N
     |   expression '|' expression   {$$ = Create_ast(expression_or,-1,NULL,$1,$3,NULL,NULL);}
     |   '~' expression  {$$ = Create_ast(expression_not,-1,NULL,$2,NULL,NULL,NULL);}
     ;
-type_key_word: KW_CARA {printf("\n achout kw_cara");$$ = KW_CARA;}
-    | KW_INTE {printf("\n achout KW_INTE");$$ = KW_INTE;}
-    | KW_REAL {printf("\n achout kw_cara");$$ = KW_REAL;}
+type_key_word: KW_CARA {$$ = KW_CARA;}
+    | KW_INTE {$$ = KW_INTE;}
+    | KW_REAL {$$ = KW_REAL;}
     ;
 
-type_literal: LIT_CHAR {printf("\nachou LIT_CHAR, simbol name = %s, value= %s", $1->name, $1->value); $$ = $1;}
-    | LIT_FLOAT {printf("\nachou LIT_FLOAT, simbol name = %s, value= %s", $1->name, $1->value); $$ = $1;}
-    | LIT_INTEIRO {printf("\nachou LIT_INTEIRO, simbol name = %s, value= %s", $1->name, $1->value); $$ = $1;}
-    | LIT_STRING {printf("\nachou LIT_STRING, simbol name = %s, value= %s", $1->name, $1->value); $$ = $1;}
+type_literal: LIT_CHAR {$$ = $1;}
+    | LIT_FLOAT {$$ = $1;}
+    | LIT_INTEIRO {$$ = $1;}
+    | LIT_STRING {$$ = $1;}
     ;
 
-ident_list: ident_list type_key_word TK_IDENTIFIER
-    | 
+ident_list: ident_list type_key_word TK_IDENTIFIER  {$$ = Add_to_tail($1,Create_ast(tail_list_ident,$2,$3,NULL,NULL,NULL,NULL));}
+    |   {$$ = Create_ast(head_list_ident,-1,NULL,NULL,NULL,NULL,NULL);}
     ;
 
 

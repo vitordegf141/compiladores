@@ -27,7 +27,7 @@ Ast* Add_to_tail(Ast* head, Ast* new_son)
             fflush(stdout);
             exit(3);
         }
-    if(head->ast_type != head_list_decl && head->ast_type != head_list_expression)
+    if(head->ast_type != head_list_decl && head->ast_type != head_list_expression && head->ast_type != head_list_ident)
     {
         printf("\n head should be of type head_list, head ast_type %d head_list_decl number = %d\n",head->ast_type,head_list_decl);
         fflush(stdout);
@@ -197,7 +197,9 @@ void decode_and_decompile(Ast* ast,FILE* out)
         break;
     case function_decl :
         decode_language_type(ast->type,out);
-        fprintf(out, " %s () {}\n",ast->symbol->name);
+        fprintf(out, " %s (",ast->symbol->name);
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, ") {}\n");
         break;
     case literal :
         fprintf(out, "literal");
@@ -211,6 +213,16 @@ void decode_and_decompile(Ast* ast,FILE* out)
     case tail_list_expression :
         fprintf(out, " ");
         decode_and_decompile(ast->sons[0],out);
+        if(ast->sons[next_son] != NULL)
+            decode_and_decompile(ast->sons[next_son],out);
+        break;
+    case head_list_ident :
+        decode_and_decompile(ast->sons[next_son],out);
+        break;
+    case tail_list_ident :
+        fprintf(out, " ");
+        decode_language_type(ast->type,out);
+        fprintf(out, " %s",ast->symbol->name);
         if(ast->sons[next_son] != NULL)
             decode_and_decompile(ast->sons[next_son],out);
         break;

@@ -1,4 +1,4 @@
 // program 
-cara fun1c () {}
+cara fun1c ( inte vac real tes) {}
 cara verde = 12 ;
 inte vect [ 12 ]  1 2 34 4 ;

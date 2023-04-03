@@ -177,7 +177,7 @@ Nonterminals, with rules where they appear
     type_literal <symbol> (56)
         on left: 49 50 51 52
         on right: 27
-    ident_list (57)
+    ident_list <ast> (57)
         on left: 53 54
         on right: 23 53
 
