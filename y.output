@@ -135,25 +135,25 @@ Nonterminals, with rules where they appear
     list_decl <ast> (42)
         on left: 2 3 4
         on right: 1 2 3
-    list_commands (43)
+    list_commands <ast> (43)
         on left: 5 6
         on right: 5 24
-    command (44)
+    command <ast> (44)
         on left: 7 8 9 10 11 12 13
         on right: 5 6 17 18 19
-    assingment (45)
+    assingment <ast> (45)
         on left: 14 15
         on right: 7
-    command_escreva (46)
+    command_escreva <ast> (46)
         on left: 16
         on right: 8
-    command_senaum (47)
+    command_senaum <ast> (47)
         on left: 17 18
         on right: 10
-    command_enquanto (48)
+    command_enquanto <ast> (48)
         on left: 19
         on right: 11
-    command_return (49)
+    command_return <ast> (49)
         on left: 20
         on right: 12
     var_decl <ast> (50)
@@ -162,7 +162,7 @@ Nonterminals, with rules where they appear
     function_decl <ast> (51)
         on left: 23
         on right: 3
-    block_decl (52)
+    block_decl <ast> (52)
         on left: 24
         on right: 9 23
     list_expression <ast> (53)

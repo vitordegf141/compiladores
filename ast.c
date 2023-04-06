@@ -27,7 +27,7 @@ Ast* Add_to_tail(Ast* head, Ast* new_son)
             fflush(stdout);
             exit(3);
         }
-    if(head->ast_type != head_list_decl && head->ast_type != head_list_expression && head->ast_type != head_list_ident)
+    if(head->ast_type != head_list_decl && head->ast_type != head_list_expression && head->ast_type != head_list_ident && head->ast_type != head_list_cmd)
     {
         printf("\n head should be of type head_list, head ast_type %d head_list_decl number = %d\n",head->ast_type,head_list_decl);
         fflush(stdout);
@@ -40,6 +40,53 @@ Ast* Add_to_tail(Ast* head, Ast* new_son)
     temp->sons[next_son]=new_son;
     new_son->parent=temp;
     return head;
+}
+void print_lit_string(char* string,FILE* out)
+{
+    int i =0;
+    for (i=0;string[i] !='\0';i++)
+    {
+            switch (string[i])
+            {
+            case '\a': fprintf(out, "\\a");break;
+            case '\b': fprintf(out, "\\b");break;
+            case '\e': fprintf(out, "\\e");break;
+            case '\f': fprintf(out, "\\f");break;
+            case '\n': fprintf(out, "\\n");break;
+            case '\r': fprintf(out, "\\r");break;
+            case '\t': fprintf(out, "\\t");break;
+            case '\v': fprintf(out, "\\v");break;
+            case '\\': fprintf(out, "\\");break;
+            case '\'': fprintf(out, "\\\'");break;
+            case '\"': fprintf(out, "\\\"");break;
+            case '?': fprintf(out, "\\?");break;
+            default:
+                fprintf(out, "%c",string[i]);
+                break;
+            }
+    }
+}
+
+void decode_TK_identifier(Hash_node* symbol,FILE* out)
+{
+     if(symbol->name[0]== '%')
+        {
+            if(symbol->type == 273 || symbol->type == 274)
+                fprintf(out, "%s",symbol->value);
+            else if(symbol->type ==275)
+                fprintf(out, "\'%s\'",symbol->value);
+            else if((symbol->type ==276))
+            {
+                fprintf(out, "\"");
+                print_lit_string(symbol->value,out);
+                fprintf(out, "\"");
+            }
+                
+        }
+        else
+        {
+            fprintf(out, "%s",symbol->name);
+        }
 }
 
 void decode_language_type(int type,FILE* out)
@@ -87,9 +134,6 @@ void decode_and_print_ast_type(Ast* ast)
     case literal :
         printf("literal");
         break;
-    case assignment :
-        printf("assignment");
-        break;
     case head_list_expression :
         printf("head_list_expression");
         break;
@@ -99,8 +143,8 @@ void decode_and_print_ast_type(Ast* ast)
     case expression_var :
         printf("expression_var, name: %s",ast->symbol->name);
         break;
-    case expression_escreva :
-        printf("expression_escreva");
+    case expression_entrada :
+        printf("expression_entrada");
         break;
     case expression_func_call :
         printf("expression_func_call");
@@ -150,6 +194,27 @@ void decode_and_print_ast_type(Ast* ast)
     case expression_not :
         printf("expression_not");
         break;
+    case var_assignment :
+        printf("var_assignment");
+        break;
+    case vec_assignment :
+        printf("vec_assignment");
+        break;
+    case escreva_cmd :
+        printf("escreva_cmd");
+        break;
+    case retorne_cmd :
+        printf("retorne_cmd");
+        break;
+    case head_list_cmd :
+        printf("head_list_cmd");
+        break;
+    case tail_list_cmd :
+        printf("tail_list_cmd");
+        break;
+    case block_dec :
+        printf("block_dec");
+        break;   
     default:
         printf("uncoded_type");
         break;
@@ -199,16 +264,17 @@ void decode_and_decompile(Ast* ast,FILE* out)
         decode_language_type(ast->type,out);
         fprintf(out, " %s (",ast->symbol->name);
         decode_and_decompile(ast->sons[0],out);
-        fprintf(out, ") {}\n");
+        fprintf(out, ")");
+        if(ast->sons[1] == NULL)
+            fprintf(out, "function_decl 1 is NULL");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case literal :
         fprintf(out, "literal");
         break;
-    case assignment :
-        fprintf(out, "assignment");
-        break;
     case head_list_expression :
-        decode_and_decompile(ast->sons[next_son],out);
+        if(ast->sons[next_son] != NULL)
+            decode_and_decompile(ast->sons[next_son],out);
         break;
     case tail_list_expression :
         fprintf(out, " ");
@@ -217,7 +283,8 @@ void decode_and_decompile(Ast* ast,FILE* out)
             decode_and_decompile(ast->sons[next_son],out);
         break;
     case head_list_ident :
-        decode_and_decompile(ast->sons[next_son],out);
+        if(ast->sons[next_son] != NULL)
+            decode_and_decompile(ast->sons[next_son],out);
         break;
     case tail_list_ident :
         fprintf(out, " ");
@@ -227,66 +294,153 @@ void decode_and_decompile(Ast* ast,FILE* out)
             decode_and_decompile(ast->sons[next_son],out);
         break;
     case expression_var :
-        if(ast->symbol->name[0]== '%')
-        {
-            fprintf(out, "%s",ast->symbol->value);
-        }
-        else
-        {
-            fprintf(out, "%s",ast->symbol->name);
-        }
-        
+        decode_TK_identifier(ast->symbol,out);        
         break;
-    case expression_escreva :
-        fprintf(out, "expression_escreva");
+    case expression_entrada :
+        fprintf(out, "entrada");
         break;
     case expression_func_call :
-        fprintf(out, "expression_func_call");
+        fprintf(out, "%s ()",ast->symbol->name);
         break;
     case expression_vector_pos :
-        fprintf(out, "expression_vector_pos");
+        fprintf(out, "%s[",ast->symbol->name);
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, "]");
         break;
     case expression_parentesis :
-        fprintf(out, "expression_parentesis");
+        fprintf(out, "(");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, ")");
         break;
     case expression_add :
-        fprintf(out, "expression_add");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " + ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_minus :
-        fprintf(out, "expression_minus");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " - ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_mult :
-        fprintf(out, "expression_mult");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " * ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_divison :
-        fprintf(out, "expression_divison");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " / ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_gt :
-        fprintf(out, "expression_gt");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " > ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_ge :
-        fprintf(out, "expression_ge");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " >= ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_lt :
-        fprintf(out, "expression_lt");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " < ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_le :
-        fprintf(out, "expression_le");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " <= ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_dif :
-        fprintf(out, "expression_dif");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " != ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_eq :
-        fprintf(out, "expression_eq");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " == ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_and :
-        fprintf(out, "expression_and");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " & ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_or :
-        fprintf(out, "expression_or");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " | ");
+        decode_and_decompile(ast->sons[1],out);
         break;
     case expression_not :
-        fprintf(out, "expression_not");
+        fprintf(out, " ~ ");
+        decode_and_decompile(ast->sons[0],out);
+        break;
+    case var_assignment :
+        fprintf(out, " %s  = ",ast->symbol->name);
+        decode_and_decompile(ast->sons[0],out);
+        break;
+    case vec_assignment :
+        fprintf(out, " %s [ ",ast->symbol->name);
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " ] = ");
+        decode_and_decompile(ast->sons[1],out);
+        break;
+    case escreva_cmd :
+        fprintf(out, " escreva ");
+        decode_and_decompile(ast->sons[0],out);
+        break;
+    case retorne_cmd :
+        fprintf(out, " retorne ");
+        decode_and_decompile(ast->sons[0],out);
+        break;
+    case head_list_cmd :
+        if(ast->sons[next_son] == NULL)
+            fprintf(out, "HEAD NEXT IS NULL");
+        decode_and_decompile(ast->sons[next_son],out);
+        break;
+    case tail_list_cmd :
+        if(ast->sons[0] == NULL)
+            fprintf(out, "tail_list_cmd first IS NULL");
+        fprintf(out, "\t");
+        decode_and_decompile(ast->sons[0],out);
+        if(ast->sons[next_son] != NULL)
+        {
+            fprintf(out, " ;\n");
+            decode_and_decompile(ast->sons[next_son],out);
+        }
+        break;
+    case block_dec :
+        fprintf(out, "\n{\n");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, "\n}\n");
+        break;
+    case empty_cmd :
+        break;
+    case enquanto_cmd :
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " enquanto ");
+        fprintf(out, " ( ");
+        decode_and_decompile(ast->sons[2],out);
+        fprintf(out, " ) ");
+        break;
+    case entaum_cmd :
+        fprintf(out, " entaum ");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " se ");
+        fprintf(out, " ( ");
+        decode_and_decompile(ast->sons[2],out);
+        fprintf(out, " ) ");
+        break;
+    case senaum_cmd :
+        fprintf(out, "entaum ");
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out, " senaum ");
+        decode_and_decompile(ast->sons[1],out);
+        fprintf(out, " se ");
+        fprintf(out, " ( ");
+        decode_and_decompile(ast->sons[2],out);
+        fprintf(out, " ) ");
         break;
     default:
         fprintf(out, "uncoded_type");

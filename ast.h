@@ -11,13 +11,12 @@
 #define vector_decl 5
 #define function_decl 6
 #define literal 7
-#define assignment 8
 #define head_list_expression 9
 #define tail_list_expression 10
 #define head_list_ident 11
 #define tail_list_ident 12
 #define expression_var 100
-#define expression_escreva 101
+#define expression_entrada 101
 #define expression_func_call 102
 #define expression_vector_pos 103
 #define expression_parentesis 104
@@ -34,7 +33,17 @@
 #define expression_and 116
 #define expression_or 117
 #define expression_not 118
-
+#define var_assignment 200
+#define vec_assignment 201
+#define escreva_cmd 202
+#define retorne_cmd 203
+#define head_list_cmd 204
+#define tail_list_cmd 205
+#define block_dec 206
+#define empty_cmd 207
+#define enquanto_cmd 208
+#define entaum_cmd 209
+#define senaum_cmd 210
 
 #include "hash.h"
 
