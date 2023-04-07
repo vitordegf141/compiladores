@@ -1461,9 +1461,9 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 67 "parser.y"
-                   {fflush(stdout);(yyval.ast) = Create_ast(program_ast,-1,NULL,NULL,NULL,NULL,(yyvsp[0].ast));print_program_ast((yyval.ast));write_ast_to_program((yyval.ast),yyout);}
-#line 1467 "y.tab.c"
+#line 69 "parser.y"
+                   {fflush(stdout);(yyval.ast) = Create_ast(program_ast,-1,NULL,NULL,NULL,NULL,(yyvsp[0].ast));write_ast_to_program((yyval.ast),yyout);}
+#line 1469 "y.tab.c"
     break;
 
   case 3:

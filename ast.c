@@ -6,6 +6,7 @@
 #define next_son 3
 Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, Ast* son2, Ast* son3)
 {
+    fflush(stdout);
     Ast* new_ast = (Ast *) malloc(sizeof(Ast));
     new_ast->ast_type=ast_type;
     new_ast->type=type;
@@ -14,6 +15,103 @@ Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, 
     new_ast->sons[1]=son1;
     new_ast->sons[2]=son2;
     new_ast->sons[3]=son3;
+    switch (ast_type)
+    {
+    case program_ast :
+    break;
+    case head_list_decl :
+        break;
+    case tail_list_decl :
+        break;
+    case var_decl :
+        symbol->declaration=new_ast;
+        symbol->type=type;
+        symbol->symbol_type=var_simbol;
+        break;
+    case vector_decl :
+        symbol->declaration=new_ast;
+        symbol->type=type;
+        symbol->symbol_type=vector_simbol;
+        break;
+    case function_decl :
+        symbol->declaration=new_ast;
+        symbol->type=type;
+        symbol->symbol_type=function_simbol;
+        break;
+    case head_list_expression :
+        break;
+    case tail_list_expression :
+        break;
+    case head_list_ident :
+        break;
+    case tail_list_ident :
+        symbol->symbol_type=parameter_simbol;
+        break;
+    case expression_var :
+        break;
+    case expression_entrada :
+        break;
+    case expression_func_call :
+        if(symbol->declaration != NULL)
+        {
+            new_ast->type=symbol->type;
+        }
+        break;
+    case expression_vector_pos :
+        break;
+    case expression_parentesis :
+        break;
+    case expression_add :
+        break;
+    case expression_minus :
+        break;
+    case expression_mult :
+        break;
+    case expression_divison :
+        break;
+    case expression_gt :
+        break;
+    case expression_ge :
+        break;
+    case expression_lt :
+        break;
+    case expression_le :
+        break;
+    case expression_dif :
+        break;
+    case expression_eq :
+        break;
+    case expression_and :
+        break;
+    case expression_or :
+        break;
+    case expression_not :
+        break;
+    case var_assignment :
+        break;
+    case vec_assignment :
+        break;
+    case escreva_cmd :
+        break;
+    case retorne_cmd :
+        break;
+    case head_list_cmd :
+        break;
+    case tail_list_cmd :
+        break;
+    case block_dec :
+        break;
+    case empty_cmd :
+        break;
+    case enquanto_cmd :
+        break;
+    case entaum_cmd :
+        break;
+    case senaum_cmd :
+        break;
+    default:
+        break;
+    }
     return new_ast;
 }
 
@@ -71,9 +169,9 @@ void decode_TK_identifier(Hash_node* symbol,FILE* out)
 {
      if(symbol->name[0]== '%')
         {
-            if(symbol->type == 273 || symbol->type == 274)
+            if(symbol->type == 259 || symbol->type == 260)
                 fprintf(out, "%s",symbol->value);
-            else if(symbol->type ==275)
+            else if(symbol->type ==258)
                 fprintf(out, "\'%s\'",symbol->value);
             else if((symbol->type ==276))
             {
@@ -300,7 +398,9 @@ void decode_and_decompile(Ast* ast,FILE* out)
         fprintf(out, "entrada");
         break;
     case expression_func_call :
-        fprintf(out, "%s ()",ast->symbol->name);
+        fprintf(out, "%s (",ast->symbol->name);
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out,")");
         break;
     case expression_vector_pos :
         fprintf(out, "%s[",ast->symbol->name);

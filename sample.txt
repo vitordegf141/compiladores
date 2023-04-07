@@ -7,12 +7,14 @@ cara fun1c(inte vac real tes){
     escreva "vai pqp" 0.12;
     entaum
     {
-        escreva kkk
+        escreva kkk;
+        aa=2;
+        asas = "asd"
     }
     se ( 1 == 1);
     entaum
     {
-        escreva kkk
+        escreva kkk;
     }
     senaum escreva hahaha
     se ( 1 == 1)

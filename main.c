@@ -5,7 +5,8 @@
 
 extern FILE *yyin;
 extern FILE *yyout;
-int decode(int token)
+int yyparse();
+void decode(int token)
 {
     switch (token)
     {
