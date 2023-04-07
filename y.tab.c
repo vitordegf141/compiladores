@@ -1464,7 +1464,7 @@ yyreduce:
     {
   case 2:
 #line 69 "parser.y"
-                   {fflush(stdout);(yyval.ast) = Create_ast(program_ast,-1,NULL,NULL,NULL,NULL,(yyvsp[0].ast));verify_program((yyval.ast));write_ast_to_program((yyval.ast),yyout);}
+                   {fflush(stdout);(yyval.ast) = Create_ast(program_ast,-1,NULL,NULL,NULL,NULL,(yyvsp[0].ast));if(verify_program((yyval.ast))>0) return 4;write_ast_to_program((yyval.ast),yyout);}
 #line 1469 "y.tab.c"
     break;
 

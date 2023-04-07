@@ -46,6 +46,7 @@ Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, 
     case head_list_ident :
         break;
     case tail_list_ident :
+        symbol->symbol_type=parameter_simbol;
         break;
     case expression_var :
         break;
@@ -98,7 +99,7 @@ Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, 
     case head_list_cmd :
         break;
     case tail_list_cmd :
-        symbol->symbol_type=parameter_simbol;
+        
         break;
     case block_dec :
         break;

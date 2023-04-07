@@ -144,7 +144,11 @@ int main(int argc, char *args[])
     }
     initMe();
     result = yyparse();
-    printf("\nresult é o que? %d",result);
+    
+    printf("\nline counting : %d\n", line_number);
+    printf("\n*********hash********\n");
+    print_hashtable();
+    printf("\n*******end hash******\n");
     if(result == 0)
     {
         printf("\nSUCCESSFUL it is a program !");
@@ -153,11 +157,10 @@ int main(int argc, char *args[])
     {
         printf("\n Error on %d",line_number);
     }
-    
-    printf("\nline counting : %d\n", line_number);
-    printf("\n*********hash********\n");
-    print_hashtable();
-    printf("\n*******end hash******\n");
+    else if(result ==4)
+    {
+        printf("\n semantic error");
+    }
     exit(result);
     return result;
 }

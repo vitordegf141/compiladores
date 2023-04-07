@@ -7,7 +7,9 @@
 #define canNotDetermine -10
 int verify_exp(Ast* exp, int* result);
 int verify_func_call(Ast* func_call);
-int verify_vector_list_assig(Ast* vect,int *result);
+void verify_vector_list_assig(Ast* vect,int *result);
+void verify_cmd(Ast* cmd,int *result, int function_type);
+void verify_bloc(Ast* bloc,int *result, int function_type);
 int verify_redeclarations(Ast* head)
 {
     printf("\nverifying redeclarations\n");
@@ -24,8 +26,33 @@ int verify_redeclarations(Ast* head)
     Ast* first_tail =head->sons[3];
     int number_of_declarations =0;
     Ast* temp =first_tail;
-    for(number_of_declarations =0;temp->sons[3]!=NULL;temp=temp->sons[3])
+    Ast* temp_f;
+    for(number_of_declarations =0;temp!=NULL;temp=temp->sons[3])
+    {
         number_of_declarations++;
+        if(temp->sons[0]->ast_type == function_decl)
+        {
+            if(temp->sons[0] == NULL)
+            {
+                fprintf(stderr,"FIRST OF TAIL OF LIST_DECL IS NULL");
+                fflush(stderr);
+                return 4;
+            }
+            if(temp->sons[0]->sons[0] == NULL)
+            {
+                fprintf(stderr,"LIST_IDENT OF FUNCTION IS NULL");
+                fflush(stderr);
+                return 4;
+            }
+            if(temp->sons[0]->sons[0]->sons[3] !=NULL)
+            {
+                for(temp_f=temp->sons[0]->sons[0]->sons[3];temp_f!=NULL;temp_f=temp_f->sons[3])
+                number_of_declarations++;
+            }
+            
+        }
+    }
+        
     char **names_found = (char **) malloc(sizeof(char **)*number_of_declarations);
     printf("number of declaration: %d\n",number_of_declarations);
     int len_names_found =0;
@@ -33,6 +60,7 @@ int verify_redeclarations(Ast* head)
     int has_found=0;
     int brk =0;
     Ast* declaration;
+    Ast* declaration_f;
     if (first_tail->sons[3]==NULL)
         return 0;
     for(temp =first_tail;brk==0;temp=temp->sons[3])
@@ -72,6 +100,56 @@ int verify_redeclarations(Ast* head)
             names_found[len_names_found] = declaration->symbol->name;
             len_names_found++;
         }
+
+        if(declaration->ast_type == function_decl)
+        {
+            printf("verifying paramter names\n");
+            if(declaration->sons[0] == NULL)
+                printf("FUNCTION FIRST IS NULL\n");
+            fflush(stdout);
+            declaration_f = declaration->sons[0];
+            if(declaration_f->sons[3] != NULL)
+            {
+                for(temp_f=declaration_f->sons[3];temp_f!=NULL;temp_f=temp_f->sons[3])
+                {
+                    if(temp_f->sons[0] == NULL)
+                        printf("temp_f FIRST IS NULL\n");
+                    printf("temp_f ast type = %d\n",temp_f->ast_type);
+                    fflush(stdout);
+                    declaration_f = temp_f->sons[0];
+                    printf("verifying paramter name = %s\n",temp_f->symbol->name);
+                    fflush(stdout);
+                    has_found=0;
+                    for(current_name_found=0;current_name_found<len_names_found;current_name_found++)
+                    {
+                        if(strcmp(names_found[current_name_found],temp_f->symbol->name) ==0)
+                        {
+                            has_found =1;
+                            fprintf(stderr, "\n name %s is being redeclared as a function paramter!\n",names_found[current_name_found]);
+                            result =4;
+                        }
+                    }
+                    if(has_found == 0)
+                    {
+                        printf("did not found");
+                        fflush(stdout);
+                        if(len_names_found >= number_of_declarations)
+                        {
+                            fprintf(stderr, "\n IS ADDING MORE NAMES THAN NUMBER OF DECLARATIONS!\n");
+                            fflush(stderr);
+                            exit(4);
+                        }
+                        names_found[len_names_found] = temp_f->symbol->name;
+                        len_names_found++;
+                    }
+                    
+                }
+                
+            }
+            else
+                printf("empty paramter list\n");
+            
+        }
     }
     return result;
 }
@@ -80,9 +158,9 @@ int compare_type(int type1,int type2)
 {
     if(type1 == isEntrada || type1 == isEntrada)
         return 0;
-    if(type1 == LIT_INTEIRO || type1 == LIT_CHAR)
+    if(type1 == KW_INTE || type1 == KW_CARA)
     {
-        if(type1 == LIT_INTEIRO || type1 == LIT_CHAR)
+        if(type2 == KW_INTE || type2 == KW_CARA)
             return 0;
         else
             {
@@ -135,19 +213,22 @@ int verify_expressions(Ast* head)
             exit(4);
         }
         decl = temp->sons[0];
-        printf("decl type is = %d\n",decl->ast_type);
         switch (decl->ast_type)
         {
         case var_decl:
-            printf("var_decl\n");
             result +=compare_type(decl->type,verify_exp(decl->sons[0],&result));
             break;
         case vector_decl:
-            printf("vector_decl\n");
             verify_vector_list_assig(decl,&result);
             break;
         case function_decl:
-            /* code */
+            if(decl->sons[1] ==NULL)
+            {
+                fprintf(stderr,"second of function(bloc) is NULL");
+                fflush(stderr);
+                return 4;
+            }
+            verify_bloc(decl->sons[1],&result,decl->type);
             break;
         default:
             printf("DEFAULTS SHOULD NOT BE HAPPENING\n");
@@ -169,8 +250,8 @@ int verify_exp(Ast* exp,int* result)
         case expression_var :
             if(exp->symbol->declaration != NULL || exp->symbol->symbol_type==0)
             {
-                if(exp->symbol->symbol_type==0)
-                    printf("eh literal type: %d\n",exp->symbol->type);
+                //if(exp->symbol->symbol_type==0)
+                //    printf("eh literal type: %d\n",exp->symbol->type);
                 return exp->symbol->type;
             }
                 
@@ -213,7 +294,13 @@ int verify_exp(Ast* exp,int* result)
                 }
                 else
                 {
-                    *result += compare_type(LIT_INTEIRO,verify_exp(exp->sons[0],result));
+                    if(exp->sons[0] == NULL)
+                    {
+                        fprintf(stderr,"FIRST OF expression_vector_pos IS NULL");
+                        fflush(stderr);
+                        return canNotDetermine;
+                    }
+                    *result += compare_type(KW_INTE,verify_exp(exp->sons[0],result));
                     return exp->symbol->type;
                 }
             }
@@ -241,7 +328,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_minus :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not subtract string");
@@ -254,7 +341,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_mult :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not multiplicate string");
@@ -267,7 +354,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_divison :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not divide string");
@@ -280,7 +367,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_gt :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not GT string");
@@ -293,7 +380,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_ge :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not GE string");
@@ -306,7 +393,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_lt :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not LT string");
@@ -319,7 +406,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_le :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not LE string");
@@ -332,7 +419,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_dif :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not DIF string");
@@ -345,7 +432,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_eq :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not EQ string");
@@ -358,7 +445,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_and :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not AND string");
@@ -371,7 +458,7 @@ int verify_exp(Ast* exp,int* result)
             break;
         case expression_or :
             type1 = verify_exp(exp->sons[0],result);
-            type1 = verify_exp(exp->sons[1],result);
+            type2 = verify_exp(exp->sons[1],result);
             if(type1 == LIT_STRING || type2 == LIT_STRING)
             {
                 fprintf(stderr,"can not OR string");
@@ -386,11 +473,14 @@ int verify_exp(Ast* exp,int* result)
             type1 = verify_exp(exp->sons[0],result);
             if(type1 != LIT_BOOL)
             {
-                fprintf(stderr,"can only negate boolean expression");
+                fprintf(stderr,"can only negate boolean expression\n");
                 return canNotDetermine;
             }
             else
+            {
                 return LIT_BOOL;
+            }
+                
             break;
     }
 }
@@ -400,7 +490,7 @@ int verify_func_call(Ast* func_call)
     int number_of_parameters=-1;
     int number_of_arguments=-1;
     int result=0;
-    int type_par=0;
+    int type_arg=0;
     Ast* func = func_call->symbol->declaration;
     for(Ast* temp=func->sons[0];temp!=NULL;temp=temp->sons[3])
         number_of_parameters++;
@@ -418,19 +508,21 @@ int verify_func_call(Ast* func_call)
         return 1;
     }
     Ast* par = func->sons[0];
-    printf("par second type should be tail = %d\n",par->sons[3]->ast_type);
-    printf("arg fist type should be head = %d\n",func_call->sons[0]->sons[3]->ast_type);
+    //printf("par second ast_type should be tail = %d\n",par->sons[3]->ast_type);
+    //printf("arg second ast_type should be head = %d\n",func_call->sons[0]->sons[3]->ast_type);
+    //printf("par second type should be not minus = %d\n",par->sons[3]->type);
+    //printf("arg second type should be minus maybe = %d\n",func_call->sons[0]->sons[3]->type);
     for(Ast* arg=func_call->sons[0]->sons[3];arg!=NULL;arg=arg->sons[3])
     {
         par = par->sons[3];
-        type_par = verify_exp(par,&result);
-        printf("comparing function call args arg:%d parameter:%d\n",arg->type,type_par);
-        result +=compare_type(arg->type,type_par);
+        type_arg = verify_exp(arg->sons[0],&result);
+        //printf("comparing function call args arg:%d parameter:%d\n",type_arg,par->type);
+        result +=compare_type(par->type,type_arg);
     }
     return result;
 }
 
-int verify_vector_list_assig(Ast* vect,int *result)
+void verify_vector_list_assig(Ast* vect,int *result)
 {
     Ast* list_exp_head = vect->sons[1];
     Ast* temp = list_exp_head->sons[3];
@@ -440,10 +532,172 @@ int verify_vector_list_assig(Ast* vect,int *result)
         exp_type = verify_exp(temp->sons[0],result);
         *result += compare_type(vect->type,exp_type);
     }
+
 }
 
-void verify_program(Ast* Program)
+void verify_bloc(Ast* bloc,int *result, int function_type)
 {
+    if(bloc->sons[0] == NULL)
+    {
+        fprintf(stderr,"first of bloc(list of commands) is NULL ");
+        fflush(stderr);
+        return;
+    }
+    for(Ast* temp=bloc->sons[0];temp!=NULL;temp=temp->sons[3])
+    {
+        if(temp->sons[0] == NULL)
+        {
+             if(temp->ast_type!=head_list_cmd && temp->ast_type!=empty_cmd) 
+            {
+                fprintf(stderr,"FIRST OF CMD that is not HEAD OR EMPTY CMD is NULL \n");
+                fflush(stderr);
+                return;
+            }
+        }
+        else
+        {
+            verify_cmd(temp->sons[0],result,function_type);
+        }
+            
+    }
+}
+
+void verify_cmd(Ast* cmd,int *result, int function_type)
+{
+    Ast* temp;
+    int temp_res;
+    //printf("cmd->ast_type = %d\n",cmd->ast_type);
+    //fflush(stdout);
+    switch (cmd->ast_type)
+    {
+    case escreva_cmd :
+        if(cmd->sons[0] == NULL)
+        {
+            fprintf(stderr,"FIRST THE ESCREVA IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        for(temp=cmd->sons[0];temp!=NULL;temp=temp->sons[3])
+        {
+            if(temp->ast_type != tail_list_expression && temp->ast_type != head_list_expression)
+            {
+                fprintf(stderr,"THERE SHOULD NOT SOMETHING DIFERENT THAN A tail_list_expression HERE\n");
+                fflush(stderr);
+                return;
+            }
+            if(temp->sons[0] !=NULL)
+            {
+                temp_res = verify_exp(temp->sons[0],result);
+                if(temp_res == canNotDetermine)
+                    *result +=1; 
+            }
+        }
+        break;
+    case retorne_cmd :
+        if(cmd->sons[0] == NULL)
+        {
+            fprintf(stderr,"FIRST THE ESCREVA IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        temp_res = verify_exp(cmd->sons[0],result);
+        if(compare_type(function_type,temp_res) !=0)
+            *result +=1;
+        break;
+    case head_list_cmd :
+        fprintf(stderr,"THERE SHOULD NOT BE A HEAD_LIST_CMD HERE\n");
+        fflush(stderr);
+        return;
+        break;
+    case tail_list_cmd :
+        fprintf(stderr,"THERE SHOULD NOT BE A tail_list_cmd HERE\n");
+        fflush(stderr);
+        return;
+        break;
+    case block_dec :
+        verify_bloc(cmd,result,function_type);
+        break;
+    case empty_cmd :
+        break;
+    case enquanto_cmd :
+        if(cmd->sons[0] == NULL)
+        {
+            fprintf(stderr,"FIRST THE ENQUANTO IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        if(cmd->sons[2] == NULL)
+        {
+            fprintf(stderr,"THIRD THE ENQUANTO IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        verify_cmd(cmd->sons[0],result,function_type);
+        temp_res = verify_exp(cmd->sons[2],result);
+        if(temp_res != LIT_BOOL)
+        {
+            fprintf(stderr,"se expression should be LITBOOL\n");
+            *result +=1;
+        }
+        break;
+    case entaum_cmd :
+        if(cmd->sons[0] == NULL)
+        {
+            fprintf(stderr,"FIRST THE entaum_cmd IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        if(cmd->sons[2] == NULL)
+        {
+            fprintf(stderr,"THIRD THE entaum_cmd IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        verify_cmd(cmd->sons[0],result,function_type);
+        temp_res = verify_exp(cmd->sons[2],result);
+        if(temp_res != LIT_BOOL)
+        {
+            fprintf(stderr,"se expression should be LITBOOL\n");
+            *result +=1;
+        }
+        break;
+    case senaum_cmd :
+        if(cmd->sons[0] == NULL)
+        {
+            fprintf(stderr,"FIRST THE senaum_cmd IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        if(cmd->sons[1] == NULL)
+        {
+            fprintf(stderr,"SECOND THE senaum_cmd IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        if(cmd->sons[2] == NULL)
+        {
+            fprintf(stderr,"THIRD THE senaum_cmd IS NULL\n");
+            fflush(stderr);
+            return;
+        }
+        verify_cmd(cmd->sons[0],result,function_type);
+        verify_cmd(cmd->sons[1],result,function_type);
+        temp_res = verify_exp(cmd->sons[2],result);
+        if(temp_res != LIT_BOOL)
+        {
+            fprintf(stderr,"se expression should be LITBOOL\n");
+            *result +=1;
+        }
+        break; 
+    default:
+        break;
+    }
+    
+}
+
+int verify_program(Ast* Program)
+{
+    int result =0;
     printf("\n********* verification **********\n");
     if(Program->ast_type != program_ast)
     {
@@ -453,7 +707,13 @@ void verify_program(Ast* Program)
     }
     int result_of_redeclarations = verify_redeclarations(Program->sons[3]);
     int result_of_expresions = verify_expressions(Program->sons[3]);
+    
+    if(result_of_redeclarations+result_of_expresions>0)
+    {
+        fprintf(stderr,"\nFOUND SEMANTIC ERRORS\n");
+        fflush(stderr);
+        result =  4;
+    }
     printf("\n********* end verification **********\n");
-    //if(result_of_redeclarations+result_of_expresions>0)
-    //    exit(4);
+    return result;
 }
