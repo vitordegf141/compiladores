@@ -2,6 +2,7 @@
 %{
 #include "hash.h"
 #include "ast.h"
+#include "verification.c"
 int yyerror(const char *); 
 #define YYERROR_VERBOSE
 
@@ -37,6 +38,7 @@ int yyerror(const char *);
 %token<symbol> LIT_FLOAT
 %token<symbol> LIT_CHAR 
 %token<symbol> LIT_STRING 
+%token LIT_BOOL
 %token TOKEN_ERROR 
 
 

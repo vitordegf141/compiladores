@@ -1,6 +1,9 @@
 cara verde = 12;
+cara verde = fun1c(12 0.1);
+inte aaa = fun1c();
+inte bbb = naotem();
 inte vect[12] 1 2 34 4;
-inte ope[1 + 3] 1*3 1*7 8+1 1<=1;
+inte ope[1 + 3] 1 'd' 1==1;
 cara fun1c(inte vac real tes){
     verde[12] = "caminhao";
     retorne 1;

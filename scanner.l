@@ -96,7 +96,7 @@ void stringnewline(char *literal1){
 %%
 
 ;|\(|\)|\[|\]|\{|\}|\=|\+|\-|\*|\/|\<|\>|\&|\||\~           {return (int)yytext[0];}
-cara                                                        {printf("\nachou cara");return KW_CARA;}
+cara                                                        {return KW_CARA;}
 inte                                                        {return KW_INTE;}
 real                                                        {return KW_REAL;}
 se                                                          {return KW_SE;}
@@ -113,8 +113,8 @@ retorne                                                     {return KW_RETORNE;}
 "\n"                                                    {line_count++;line_number++;}
 "\""                                              {reset_temp_string();BEGIN READ_STRING;}
 "'"                                             {charlenght = 0;BEGIN READ_CHAR;}
-[0-9]+                                                  {yylval.symbol = insert_simbol(yytext,LIT_INTEIRO,1);return LIT_INTEIRO;}
-[0-9]+\.[0-9]+                                                {yylval.symbol = insert_simbol(yytext,LIT_FLOAT,1);return LIT_FLOAT;}
+[0-9]+                                                  {yylval.symbol = insert_simbol(yytext,KW_INTE,1);return LIT_INTEIRO;}
+[0-9]+\.[0-9]+                                                {yylval.symbol = insert_simbol(yytext,KW_REAL,1);return LIT_FLOAT;}
 \/\/                                                    {BEGIN COMMENT_SIMPLE;}
 \/\/\/                                                       {BEGIN COMMENT_MULTIPLE;}
 [a-z]+[a-z\.\_\-1-9]*                                          {yylval.symbol =insert_simbol(yytext,TK_IDENTIFIER,0);return  TK_IDENTIFIER;}
@@ -130,7 +130,7 @@ retorne                                                     {return KW_RETORNE;}
 
 
 
-<READ_CHAR>"'" {if (charlenght == 1) {yylval.symbol = insert_simbol(&chartemp,LIT_CHAR,1); yytext = &chartemp; BEGIN 0;return LIT_CHAR;} else{ return TOKEN_ERROR;} }
+<READ_CHAR>"'" {if (charlenght == 1) {yylval.symbol = insert_simbol(&chartemp,KW_CARA,1); yytext = &chartemp; BEGIN 0;return LIT_CHAR;} else{ return TOKEN_ERROR;} }
 <READ_CHAR>. {chartemp = yytext[0];charlenght++;}
 
 <READ_STRING>"\"" {yylval.symbol = insert_simbol(temp_string,LIT_STRING,1);BEGIN 0;return LIT_STRING;}

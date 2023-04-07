@@ -68,7 +68,8 @@ extern int yydebug;
     LIT_FLOAT = 274,
     LIT_CHAR = 275,
     LIT_STRING = 276,
-    TOKEN_ERROR = 277
+    LIT_BOOL = 277,
+    TOKEN_ERROR = 278
   };
 #endif
 /* Tokens.  */
@@ -91,19 +92,20 @@ extern int yydebug;
 #define LIT_FLOAT 274
 #define LIT_CHAR 275
 #define LIT_STRING 276
-#define TOKEN_ERROR 277
+#define LIT_BOOL 277
+#define TOKEN_ERROR 278
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 11 "parser.y"
+#line 12 "parser.y"
 
     Hash_node *symbol;
     Ast *ast;
     int type;
 
-#line 107 "y.tab.h"
+#line 109 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

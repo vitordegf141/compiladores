@@ -912,7 +912,7 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 99 "scanner.l"
-{printf("\nachou cara");return KW_CARA;}
+{return KW_CARA;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
@@ -998,12 +998,12 @@ YY_RULE_SETUP
 case 19:
 YY_RULE_SETUP
 #line 116 "scanner.l"
-{yylval.symbol = insert_simbol(yytext,LIT_INTEIRO,1);return LIT_INTEIRO;}
+{yylval.symbol = insert_simbol(yytext,KW_INTE,1);return LIT_INTEIRO;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 117 "scanner.l"
-{yylval.symbol = insert_simbol(yytext,LIT_FLOAT,1);return LIT_FLOAT;}
+{yylval.symbol = insert_simbol(yytext,KW_REAL,1);return LIT_FLOAT;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
@@ -1060,7 +1060,7 @@ YY_RULE_SETUP
 case 31:
 YY_RULE_SETUP
 #line 133 "scanner.l"
-{if (charlenght == 1) {yylval.symbol = insert_simbol(&chartemp,LIT_CHAR,1); yytext = &chartemp; BEGIN 0;return LIT_CHAR;} else{ return TOKEN_ERROR;} }
+{if (charlenght == 1) {yylval.symbol = insert_simbol(&chartemp,KW_CARA,1); yytext = &chartemp; BEGIN 0;return LIT_CHAR;} else{ return TOKEN_ERROR;} }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP

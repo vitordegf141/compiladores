@@ -6,14 +6,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+struct Astnode;
+
 typedef struct Hnode
 {
     char *name;
     int appearences;
     int type;
     char *value;
+    int symbol_type;
     struct Hnode *next;
+    struct Astnode* declaration;
 } Hash_node;
+
+typedef struct function_data
+{
+    int* parameters_types;
+    int lenght_parameters;
+} Func_data;
 
 Hash_node * hashtable[TABLE_SIZE];
 

@@ -4,6 +4,7 @@
 #include "hash.h"
 
 #define next_son 3
+
 Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, Ast* son2, Ast* son3)
 {
     fflush(stdout);
@@ -199,7 +200,19 @@ void decode_language_type(int type,FILE* out)
             break;
         case 260 :
             fprintf(out,"real");
-            break;    
+            break;
+        case 276 :
+            fprintf(out,"string");
+            break;
+        case 277 :
+            fprintf(out,"bool");
+            break;  
+        case -10 :
+            fprintf(out,"canNotDetermine");
+            break;
+        default:
+            fprintf(out,"0");
+
     }
    // KW_CARA = 258,
    // KW_INTE = 259,
@@ -245,7 +258,7 @@ void decode_and_print_ast_type(Ast* ast)
         printf("expression_entrada");
         break;
     case expression_func_call :
-        printf("expression_func_call");
+        printf("expression_func_call, name: %s",ast->symbol->name);
         break;
     case expression_vector_pos :
         printf("expression_vector_pos");
@@ -548,14 +561,20 @@ void decode_and_decompile(Ast* ast,FILE* out)
     }
 }
 
-void print_program_ast(Ast* program)
+void print_program_ast(Ast* program,int level,int son_number)
 {
+    level++;   
     decode_and_print_ast_type(program);
+    printf("\tlevel = %d",level);
+    printf("\t son_number = %d",son_number);
     int i=0;
     for(i=0;i<4;i++)
     {
         if(program->sons[i] != NULL)
-        print_program_ast(program->sons[i]);
+        {
+            print_program_ast(program->sons[i],level,i);
+        }
+        
     }
     
 }
@@ -564,6 +583,7 @@ void write_ast_to_program(Ast* program,FILE* out)
 {
     if(out == NULL)
         return;
+    return;
     fprintf(out, "// program \n");
     decode_and_decompile(program->sons[next_son],out);
 }

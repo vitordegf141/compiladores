@@ -160,4 +160,5 @@ int main(int argc, char *args[])
     print_hashtable();
     printf("\n*******end hash******\n");
     exit(result);
+    return result;
 }
