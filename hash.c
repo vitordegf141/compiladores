@@ -52,6 +52,7 @@ int next_has_simbol(Hash_node *simbol_root,char *name, int type)
         new->next=NULL;
         new->type=type;
         appendixlit++;
+        new->symbol_type=0;
     }
     else
     {
@@ -62,7 +63,10 @@ int next_has_simbol(Hash_node *simbol_root,char *name, int type)
         new->next=NULL;
         new->type=type;
         new->value=NULL;
+        new->symbol_type=-1;
     }
+    new->declaration=NULL;
+    
     return new;
 }
 
@@ -75,6 +79,7 @@ Hash_node* insert_in_next( Hash_node *simbol_root,char *new_simbol, int type, in
         if(strcmp(simbol_root->name,new_simbol) == 0)
         {
             simbol_root->appearences++;
+            return simbol_root;
         }
         else
         {
@@ -99,9 +104,13 @@ void print_hashtable(void)
     {
         if(hashtable[i]!=NULL)
         {
-            printf("\n\t%d\t%s\t%d",i,hashtable[i]->name,hashtable[i]->type);
+            printf("\n\t%d\t%s\t%d\tsymbol_type=%d",i,hashtable[i]->name,hashtable[i]->type,hashtable[i]->symbol_type);
             if(hashtable[i]->value!=NULL)
                 printf("\tvalue=%s",hashtable[i]->value);
+            if(hashtable[i]->declaration!=NULL)
+                printf("\tdeclaration= notNull");
+            if(hashtable[i]->declaration==NULL)
+                printf("\tdeclaration= Null");
         }
     }
     printf("\nend\n");

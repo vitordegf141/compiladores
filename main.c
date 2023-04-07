@@ -5,7 +5,7 @@
 
 extern FILE *yyin;
 extern FILE *yyout;
-int decode(int token)
+void decode(int token)
 {
     switch (token)
     {
@@ -159,4 +159,5 @@ int main(int argc, char *args[])
     print_hashtable();
     printf("\n*******end hash******\n");
     exit(result);
+    return result;
 }

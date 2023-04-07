@@ -3,6 +3,10 @@
 #ifndef HEADER_AST
 #define HEADER_AST
 
+#define var_simbol 1
+#define vector_simbol 2
+#define function_simbol 3
+#define parameter_simbol 3
 
 #define program_ast 1
 #define head_list_decl 2
@@ -59,6 +63,7 @@ typedef struct Astnode
 
 Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, Ast* son2, Ast* son3);
 Ast* Add_to_tail(Ast* head, Ast* new_son);
-void print_program_ast(Ast* program);
+void print_program_ast(Ast* program,int level,int son_number);
 void write_ast_to_program(Ast* program,FILE* out);
+void decode_language_type(int type,FILE* out);
 #endif

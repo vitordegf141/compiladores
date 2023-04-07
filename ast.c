@@ -4,6 +4,7 @@
 #include "hash.h"
 
 #define next_son 3
+
 Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, Ast* son2, Ast* son3)
 {
     Ast* new_ast = (Ast *) malloc(sizeof(Ast));
@@ -14,6 +15,104 @@ Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, 
     new_ast->sons[1]=son1;
     new_ast->sons[2]=son2;
     new_ast->sons[3]=son3;
+    switch (ast_type)
+    {
+    case program_ast :
+    break;
+    case head_list_decl :
+        break;
+    case tail_list_decl :
+        break;
+    case var_decl :
+        symbol->declaration=new_ast;
+        symbol->type=type;
+        symbol->symbol_type=var_simbol;
+        break;
+    case vector_decl :
+        symbol->declaration=new_ast;
+        symbol->type=type;
+        symbol->symbol_type=vector_simbol;
+        break;
+    case function_decl :
+        printf("\nfunc name %s",symbol->name);
+        symbol->declaration=new_ast;
+        symbol->type=type;
+        symbol->symbol_type=function_simbol;
+        break;
+    case head_list_expression :
+        break;
+    case tail_list_expression :
+        break;
+    case head_list_ident :
+        break;
+    case tail_list_ident :
+        break;
+    case expression_var :
+        break;
+    case expression_entrada :
+        break;
+    case expression_func_call :
+        if(symbol->declaration != NULL)
+        {
+            new_ast->type=symbol->type;
+        }
+        break;
+    case expression_vector_pos :
+        break;
+    case expression_parentesis :
+        break;
+    case expression_add :
+        break;
+    case expression_minus :
+        break;
+    case expression_mult :
+        break;
+    case expression_divison :
+        break;
+    case expression_gt :
+        break;
+    case expression_ge :
+        break;
+    case expression_lt :
+        break;
+    case expression_le :
+        break;
+    case expression_dif :
+        break;
+    case expression_eq :
+        break;
+    case expression_and :
+        break;
+    case expression_or :
+        break;
+    case expression_not :
+        break;
+    case var_assignment :
+        break;
+    case vec_assignment :
+        break;
+    case escreva_cmd :
+        break;
+    case retorne_cmd :
+        break;
+    case head_list_cmd :
+        break;
+    case tail_list_cmd :
+        symbol->symbol_type=parameter_simbol;
+        break;
+    case block_dec :
+        break;
+    case empty_cmd :
+        break;
+    case enquanto_cmd :
+        break;
+    case entaum_cmd :
+        break;
+    case senaum_cmd :
+        break;
+    default:
+        break;
+    }
     return new_ast;
 }
 
@@ -101,7 +200,19 @@ void decode_language_type(int type,FILE* out)
             break;
         case 260 :
             fprintf(out,"real");
-            break;    
+            break;
+        case 276 :
+            fprintf(out,"string");
+            break;
+        case 277 :
+            fprintf(out,"bool");
+            break;  
+        case -10 :
+            fprintf(out,"canNotDetermine");
+            break;
+        default:
+            fprintf(out,"0");
+
     }
    // KW_CARA = 258,
    // KW_INTE = 259,
@@ -147,7 +258,7 @@ void decode_and_print_ast_type(Ast* ast)
         printf("expression_entrada");
         break;
     case expression_func_call :
-        printf("expression_func_call");
+        printf("expression_func_call, name: %s",ast->symbol->name);
         break;
     case expression_vector_pos :
         printf("expression_vector_pos");
@@ -448,14 +559,20 @@ void decode_and_decompile(Ast* ast,FILE* out)
     }
 }
 
-void print_program_ast(Ast* program)
+void print_program_ast(Ast* program,int level,int son_number)
 {
+    level++;   
     decode_and_print_ast_type(program);
+    printf("\tlevel = %d",level);
+    printf("\t son_number = %d",son_number);
     int i=0;
     for(i=0;i<4;i++)
     {
         if(program->sons[i] != NULL)
-        print_program_ast(program->sons[i]);
+        {
+            print_program_ast(program->sons[i],level,i);
+        }
+        
     }
     
 }
@@ -464,6 +581,7 @@ void write_ast_to_program(Ast* program,FILE* out)
 {
     if(out == NULL)
         return;
+    return;
     fprintf(out, "// program \n");
     decode_and_decompile(program->sons[next_son],out);
 }
