@@ -3,10 +3,7 @@
 #ifndef HEADER_AST
 #define HEADER_AST
 
-#define var_simbol 1
-#define vector_simbol 2
-#define function_simbol 3
-#define parameter_simbol 3
+
 
 #define program_ast 1
 #define head_list_decl 2
@@ -50,7 +47,7 @@
 #define senaum_cmd 210
 
 #include "hash.h"
-
+#include <stdio.h>
 typedef struct Astnode
 {
     int ast_type;

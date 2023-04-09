@@ -7,7 +7,7 @@
 #define canNotDetermine -10
 int verify_exp(Ast* exp, int* result);
 int verify_func_call(Ast* func_call);
-void verify_vector_list_assig(Ast* vect,int *result);
+void verify_vector_list_decl(Ast* vect,int *result);
 void verify_cmd(Ast* cmd,int *result, int function_type);
 void verify_bloc(Ast* bloc,int *result, int function_type);
 int verify_redeclarations(Ast* head)
@@ -112,11 +112,10 @@ int verify_redeclarations(Ast* head)
             {
                 for(temp_f=declaration_f->sons[3];temp_f!=NULL;temp_f=temp_f->sons[3])
                 {
-                    if(temp_f->sons[0] == NULL)
+                    if(temp_f->sons[0] == NULL && temp_f->ast_type != tail_list_ident )
                         printf("temp_f FIRST IS NULL\n");
                     printf("temp_f ast type = %d\n",temp_f->ast_type);
                     fflush(stdout);
-                    declaration_f = temp_f->sons[0];
                     printf("verifying paramter name = %s\n",temp_f->symbol->name);
                     fflush(stdout);
                     has_found=0;
@@ -201,6 +200,7 @@ int verify_expressions(Ast* head)
     Ast* decl;
     int brk=0;
     result =0;
+    int temp_type=0;
     printf("init veryfing expresions\n");
     for(Ast* temp=first_tail;brk==0;temp = temp->sons[3])
     {
@@ -216,10 +216,30 @@ int verify_expressions(Ast* head)
         switch (decl->ast_type)
         {
         case var_decl:
-            result +=compare_type(decl->type,verify_exp(decl->sons[0],&result));
+            if(decl->sons[0]!=NULL && decl->sons[0] !=NULL)
+            {
+                if(decl->sons[0]!=NULL && decl->sons[0]->symbol!=NULL)
+                {
+                    if(decl->sons[0]->symbol->symbol_type==0)
+                    {
+                        result +=compare_type(decl->type,verify_exp(decl->sons[0],&result));
+                    }
+                    else
+                    {
+                        fprintf(stderr,"\n %s is being declared with something diferent than a literal!",decl->symbol->name==NULL? "NULL" : decl->symbol->name);
+                        result +=4;
+                    }
+                }
+                else
+                {
+                    fprintf(stderr,"ERROR ON var_decl");
+                    result +=4;
+                }
+            }
+            
             break;
         case vector_decl:
-            verify_vector_list_assig(decl,&result);
+            verify_vector_list_decl(decl,&result);
             break;
         case function_decl:
             if(decl->sons[1] ==NULL)
@@ -522,15 +542,62 @@ int verify_func_call(Ast* func_call)
     return result;
 }
 
-void verify_vector_list_assig(Ast* vect,int *result)
+void verify_vector_list_decl(Ast* vect,int *result)
 {
+    if(vect->sons[0]==NULL) 
+    {
+        fprintf(stderr,"\n vect sons[0] eh NULL");
+        return;
+    }
+    if(vect->sons[0]->symbol==NULL) 
+    {
+        if(vect->sons[0]->ast_type != expression_var)
+        {
+            fprintf(stderr,"\n vector");
+            if(vect->symbol!=NULL && vect->symbol->name != NULL) fprintf(stderr," %s",vect->symbol->name);
+            fprintf(stderr," vector size definition MUST be A IMEDIATE INTEGER");
+            *result +=4;
+            return;
+        }
+        else
+        {
+            fprintf(stderr,"\n vect vect->sons[0]->symbol eh NULL");
+            return;
+        }
+        
+        
+    }
+    if( vect->sons[0]->ast_type != expression_var ||  vect->sons[0]->symbol->symbol_type!=0 || vect->sons[0]->symbol->type!=259)
+    {
+        *result +=4;
+        fprintf(stderr,"\n vector size definition MUST be A IMEDIATE INTEGER");
+        return;
+    }
+    int vec_size = atoi(vect->sons[0]->symbol->value);
+    int vec_size_count =0;
     Ast* list_exp_head = vect->sons[1];
     Ast* temp = list_exp_head->sons[3];
     int exp_type;
     for(;temp!=NULL;temp=temp->sons[3])
-    {
+    {   
+        vec_size_count++;
+        if(temp->sons[0]->ast_type!= expression_var ||( temp->sons[0]->symbol != NULL &&temp->sons[0]->symbol->symbol_type!=0 ))
+        {
+            fprintf(stderr,"devia printar");
+
+            if(vect->symbol !=NULL)
+                fprintf(stderr,"\n vector %s is being declared with something different than a literal!",vect->symbol->name);
+            else 
+                fprintf(stderr,"\n vector is being declared with something different than a literal!");
+            *result +=4;
+        }
         exp_type = verify_exp(temp->sons[0],result);
         *result += compare_type(vect->type,exp_type);
+    }
+    if(vec_size_count>vec_size)
+    {
+        fprintf(stderr,"\n list to assign to vector(len:%d) is bigger than vector size(len:%d)",vec_size_count,vec_size);
+        *result +=4;
     }
 
 }

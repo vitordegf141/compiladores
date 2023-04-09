@@ -4,6 +4,7 @@
         "y.tab.h": "c",
         "string.h": "c",
         "ast.h": "c",
-        "hash.h": "c"
+        "hash.h": "c",
+        "stdio.h": "c"
     }
 }

@@ -1018,7 +1018,7 @@ YY_RULE_SETUP
 case 23:
 YY_RULE_SETUP
 #line 120 "scanner.l"
-{yylval.symbol =insert_simbol(yytext,TK_IDENTIFIER,0);return  TK_IDENTIFIER;}
+{yylval.symbol =insert_simbol_tk(yytext);return  TK_IDENTIFIER;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP

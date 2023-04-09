@@ -3,6 +3,7 @@
 #include "hash.h"
 #include "ast.h"
 #include "verification.c"
+#include "tacs.h"
 int yyerror(const char *); 
 #define YYERROR_VERBOSE
 
@@ -66,7 +67,11 @@ int yyerror(const char *);
 %left KW_CARA KW_INTE KW_REAL
 
 %%
-program: list_decl {fflush(stdout);$$ = Create_ast(program_ast,-1,NULL,NULL,NULL,NULL,$1);if(verify_program($$)>0) return 4;write_ast_to_program($$,yyout);}
+program: list_decl {fflush(stdout);
+    $$ = Create_ast(program_ast,-1,NULL,NULL,NULL,NULL,$1);
+    if(verify_program($$)>0) return 4;
+    write_ast_to_program($$,yyout);
+    tacPrintBackwards(generateCode($$));}
     ; 
 list_decl: list_decl var_decl   {$$ = Add_to_tail($1,Create_ast(tail_list_decl,-1,NULL,$2,NULL,NULL,NULL));}
     | list_decl function_decl   {$$ = Add_to_tail($1,Create_ast(tail_list_decl,-1,NULL,$2,NULL,NULL,NULL));}
@@ -112,7 +117,9 @@ list_expression: list_expression expression {$$ = Add_to_tail($1,Create_ast(tail
     ;
 
 expression: type_literal {$$ = Create_ast(expression_var,$1->type,$1,NULL,NULL,NULL,NULL);}
-    |   TK_IDENTIFIER {$$ = Create_ast(expression_var,-1,$1,NULL,NULL,NULL,NULL);}
+    |   TK_IDENTIFIER {$$ = Create_ast(expression_var,-1,$1,NULL,NULL,NULL,NULL);
+                        
+                        }
     |   KW_ENTRADA  {$$ = Create_ast(expression_entrada,-1,NULL,NULL,NULL,NULL,NULL);}
     |   TK_IDENTIFIER '(' list_expression ')' {$$ = Create_ast(expression_func_call,-1,$1,$3,NULL,NULL,NULL);}
     |   TK_IDENTIFIER '[' expression ']'    {$$ = Create_ast(expression_vector_pos,-1,$1,$3,NULL,NULL,NULL);}

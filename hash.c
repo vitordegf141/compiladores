@@ -5,9 +5,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-char const defaultlit[] = "%literal_";
+char const defaultlit[] = "_lit_literal_";
+char const suffixTk[]= "_tk_";
 int appendixlit =0;
 char appendixlit_str[20];
+
+
 unsigned long hash(char *name)
 {
     unsigned long sum =0;
@@ -95,7 +98,19 @@ Hash_node* insert_in_next( Hash_node *simbol_root,char *new_simbol, int type, in
         }
     }
 }
-
+void print_next(Hash_node* next,int i)
+{
+    if(next == NULL)
+        return;
+    printf("\n\t%d\t%s\t%d\tsymbol_type=%d",i,next->name,next->type,next->symbol_type);
+            if(next->value!=NULL)
+                printf("\tvalue=%s",next->value);
+            if(next->declaration!=NULL)
+                printf("\tdeclaration= notNull");
+            if(next->declaration==NULL)
+                printf("\tdeclaration= Null");
+    print_next(next->next,i);
+}
 void print_hashtable(void)
 {
     int i;
@@ -111,12 +126,21 @@ void print_hashtable(void)
                 printf("\tdeclaration= notNull");
             if(hashtable[i]->declaration==NULL)
                 printf("\tdeclaration= Null");
+            print_next(hashtable[i]->next,i);
         }
     }
     printf("\nend\n");
     return;
 }
-
+Hash_node* insert_simbol_tk(char *name)
+{
+    
+    int namesize = strlen(name) + strlen(suffixTk);
+    char *TkName = malloc(sizeof(char)*(namesize+1));
+    strcpy(TkName,suffixTk);
+    strcat(TkName,name);
+    return insert_simbol(TkName,-1,0);
+}
 Hash_node* insert_simbol(char *name, int type,int isLiteral){
     if(name == NULL)
         return 0;
@@ -155,4 +179,23 @@ int has_simbol(char *name,int type){
     }
 }
 
+Hash_node* makeTemp(int type)
+{
+    static int serial=0;
+    char buffer[50] ="";
+    sprintf(buffer,"_tmp_temp%d",serial++);
+    Hash_node* tmp =  insert_simbol(buffer,type,0);
+    tmp->symbol_type =temp_simbol;
+    return tmp;
+}
+
+Hash_node* makeLabel()
+{
+    static int seriallabel=0;
+    char buffer[50] ="";
+    sprintf(buffer,"_label_temp%d",seriallabel++);
+    Hash_node* label =  insert_simbol(buffer,-1,0);
+    label->symbol_type =label_simbol;
+    return label;
+}
 #endif

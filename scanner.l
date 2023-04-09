@@ -117,7 +117,7 @@ retorne                                                     {return KW_RETORNE;}
 [0-9]+\.[0-9]+                                                {yylval.symbol = insert_simbol(yytext,KW_REAL,1);return LIT_FLOAT;}
 \/\/                                                    {BEGIN COMMENT_SIMPLE;}
 \/\/\/                                                       {BEGIN COMMENT_MULTIPLE;}
-[a-z]+[a-z\.\_\-1-9]*                                          {yylval.symbol =insert_simbol(yytext,TK_IDENTIFIER,0);return  TK_IDENTIFIER;}
+[a-z]+[a-z\.\_\-1-9]*                                          {yylval.symbol =insert_simbol_tk(yytext);return  TK_IDENTIFIER;}
 [ \t\r,]+                                                   {}
 .                                                    {return TOKEN_ERROR;}
 <COMMENT_MULTIPLE>. {}

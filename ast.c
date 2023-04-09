@@ -7,7 +7,11 @@
 
 Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, Ast* son2, Ast* son3)
 {
+    //printf("erro antes do malloc do create ast\t");
+    //fflush(stdout);
     Ast* new_ast = (Ast *) malloc(sizeof(Ast));
+    //printf("pos malloc\t");
+    //fflush(stdout);
     new_ast->ast_type=ast_type;
     new_ast->type=type;
     new_ast->symbol=symbol;
@@ -114,6 +118,8 @@ Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, 
     default:
         break;
     }
+    //printf("erro depois do malloc do create ast\n");
+    //fflush(stdout);
     return new_ast;
 }
 
@@ -169,11 +175,11 @@ void print_lit_string(char* string,FILE* out)
 
 void decode_TK_identifier(Hash_node* symbol,FILE* out)
 {
-     if(symbol->name[0]== '%')
+     if(symbol->symbol_type==0)
         {
-            if(symbol->type == 273 || symbol->type == 274)
+            if(symbol->type == 259 || symbol->type == 260)
                 fprintf(out, "%s",symbol->value);
-            else if(symbol->type ==275)
+            else if(symbol->type ==258)
                 fprintf(out, "\'%s\'",symbol->value);
             else if((symbol->type ==276))
             {
@@ -381,9 +387,6 @@ void decode_and_decompile(Ast* ast,FILE* out)
             fprintf(out, "function_decl 1 is NULL");
         decode_and_decompile(ast->sons[1],out);
         break;
-    case literal :
-        fprintf(out, "literal");
-        break;
     case head_list_expression :
         if(ast->sons[next_son] != NULL)
             decode_and_decompile(ast->sons[next_son],out);
@@ -412,7 +415,9 @@ void decode_and_decompile(Ast* ast,FILE* out)
         fprintf(out, "entrada");
         break;
     case expression_func_call :
-        fprintf(out, "%s ()",ast->symbol->name);
+        fprintf(out, "%s (",ast->symbol->name);
+        decode_and_decompile(ast->sons[0],out);
+        fprintf(out,")");
         break;
     case expression_vector_pos :
         fprintf(out, "%s[",ast->symbol->name);
@@ -582,7 +587,6 @@ void write_ast_to_program(Ast* program,FILE* out)
 {
     if(out == NULL)
         return;
-    return;
     fprintf(out, "// program \n");
     decode_and_decompile(program->sons[next_son],out);
 }
