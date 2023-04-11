@@ -36,6 +36,9 @@ void tacPrint(Tac* tac)
     fprintf(stderr,"TAC(");
     switch (tac->type)
     {
+    case TAC_PROGRAM:
+        fprintf(stderr,"TAC_PROGRAM");
+        break;
     case TAC_SYMBOL:
         fprintf(stderr,"TAC SYMBOL");
         break;
@@ -165,6 +168,10 @@ Tac* generateCode(Ast *Node)
     fflush(stdout);
     switch (Node->ast_type)
     {
+    case program_ast:
+        if(code[3]==NULL) fprintf(stderr,"\n\expression_add code0 eh NULL");
+        result = tacJoin(tacCreate(TAC_PROGRAM,NULL,NULL,NULL),code[3]);
+        break;
     case expression_func_call:
         result = makeFuncCall(Node->symbol,code[0]);
         break;
@@ -434,10 +441,8 @@ Tac* makeVecDecl(Hash_node* vecSymbol,Tac* code0,Tac* code1)
 Tac* makeFuncDecl(Hash_node* FuncSymbol,Tac* code0,Tac* code1)
 {
 
-    Tac* funLabel = tacCreate(TAC_LABEL,FuncSymbol,NULL,NULL);
-    Tac* funBegin = tacCreate(TAC_FUNC_BEGIN,NULL,NULL,NULL);
+    Tac* funBegin = tacCreate(TAC_FUNC_BEGIN,FuncSymbol,NULL,NULL);
     Tac* funEnd = tacCreate(TAC_FUNC_END,NULL,NULL,NULL);
-    funBegin->prev-funLabel;
     return tacJoin(code0,tacJoin(funBegin,tacJoin(code1,funEnd)));
 } 
 

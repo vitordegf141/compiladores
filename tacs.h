@@ -5,6 +5,7 @@
 #include "hash.h"
 #include "ast.h"
 
+#define TAC_PROGRAM 0
 #define TAC_SYMBOL 1
 #define TAC_ADD 101
 #define TAC_SUB 102

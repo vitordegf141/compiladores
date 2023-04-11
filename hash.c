@@ -111,6 +111,69 @@ void print_next(Hash_node* next,int i)
                 printf("\tdeclaration= Null");
     print_next(next->next,i);
 }
+
+void print_hash_to_ASM(Hash_node* next,FILE* out)
+{
+    if(next!=NULL)
+        {
+            if(next->symbol_type == 0 || next->symbol_type == 5)
+            {
+                fprintf(out,"%s:\n",next->name);
+                switch ( next->type)
+                {
+                case 258:
+                    if( next->value !=NULL)
+                        fprintf(out,"\t.byte\t\'%s\'\n",next->value);
+                    else
+                        fprintf(out,"\t.byte\t0\n");
+                    break;
+                case 259:
+                    if( next->value !=NULL)
+                        fprintf(out,"\t.long\t%s\n",next->value);
+                    else
+                        fprintf(out,"\t.long\t0\n");
+                    break;
+                case 260:
+                    if( next->value !=NULL)
+                        fprintf(out,"\t.long\t%s\n",next->value);
+                    else
+                        fprintf(out,"\t.long\t0\n");
+                    break;
+                case 276:
+                    if( next->value !=NULL)
+                        fprintf(out,"\t.string\t\"%s\"\n",next->value);
+                    else
+                        fprintf(out,"\t.string\t\"\"\n");
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+}
+
+void print_hash_next_ASM(Hash_node* next,FILE* out)
+{
+    if(next == NULL)
+        return;
+    print_hash_to_ASM(next,out);
+    print_hash_next_ASM(next->next,out);
+}
+
+void print_lit_temp_to_ASM(FILE* out)
+{
+    int i;
+    for(i=0;i<TABLE_SIZE;i++)
+    {
+        if(hashtable[i]!=NULL)
+        {
+            print_hash_to_ASM(hashtable[i],out);
+            print_hash_next_ASM(hashtable[i]->next,out);
+        }
+    }
+    return;
+}
+
 void print_hashtable(void)
 {
     int i;

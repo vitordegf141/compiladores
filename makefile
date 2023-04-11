@@ -6,8 +6,8 @@
 # In our case, you probably need #include "hash.c" at the beginning
 # and #include "main.c" in the last part of the scanner.l
 #
-etapa4: hash.o verification.c ast.o tacs.o y.tab.c lex.yy.c main.c parser.y
-	gcc hash.o ast.o tacs.o lex.yy.c -o etapa5
+etapa4: hash.o verification.c ast.o tacs.o asm.o y.tab.c lex.yy.c main.c parser.y
+	gcc hash.o ast.o tacs.o asm.o lex.yy.c -o etapa6
 
 y.tab.c: parser.y
 	yacc -d -v parser.y
@@ -24,5 +24,8 @@ tacs.o: tacs.c
 ast.o: ast.c
 	gcc -c ast.c
 
+asm.o: asm.c
+	gcc -c asm.c
+
 clean:
-	rm y.tab.c y.tab.h lex.yy.c etapa5 hash.o ast.o tacs.o
+	rm y.tab.c y.tab.h lex.yy.c etapa6 hash.o ast.o tacs.o

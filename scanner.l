@@ -134,7 +134,6 @@ retorne                                                     {return KW_RETORNE;}
 <READ_CHAR>. {chartemp = yytext[0];charlenght++;}
 
 <READ_STRING>"\"" {yylval.symbol = insert_simbol(temp_string,LIT_STRING,1);BEGIN 0;return LIT_STRING;}
-<READ_STRING>"\\" {BEGIN READ_ESCAPE;}
 <READ_STRING>. {insert_char_into_temp_string(yytext[0]);}
 
 <READ_ESCAPE>"a" {insert_char_into_temp_string('\a');BEGIN READ_STRING;}

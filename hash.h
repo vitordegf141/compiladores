@@ -42,6 +42,6 @@ int next_has_simbol(Hash_node *simbol_root,char *name, int type);
 Hash_node *create_simbol(char *simbol_name, int type, int isLiteral);
 Hash_node* insert_in_next( Hash_node *simbol_root,char *new_simbol, int type, int isLiteral);
 void print_hashtable(void);
-
+void print_lit_temp_to_ASM(FILE* out);
 
 #endif

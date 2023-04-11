@@ -4,9 +4,10 @@
 #include "ast.h"
 #include "verification.c"
 #include "tacs.h"
+#include "asm.h"
 int yyerror(const char *); 
 #define YYERROR_VERBOSE
-
+Tac* root;
 %}
 
 %union 
@@ -70,8 +71,10 @@ int yyerror(const char *);
 program: list_decl {fflush(stdout);
     $$ = Create_ast(program_ast,-1,NULL,NULL,NULL,NULL,$1);
     if(verify_program($$)>0) return 4;
-    write_ast_to_program($$,yyout);
-    tacPrintBackwards(generateCode($$));}
+    root =generateCode($$);
+    tacPrintBackwards(root);
+    generateAsm(root,yyout);
+    }
     ; 
 list_decl: list_decl var_decl   {$$ = Add_to_tail($1,Create_ast(tail_list_decl,-1,NULL,$2,NULL,NULL,NULL));}
     | list_decl function_decl   {$$ = Add_to_tail($1,Create_ast(tail_list_decl,-1,NULL,$2,NULL,NULL,NULL));}
