@@ -268,7 +268,7 @@ int verify_exp(Ast* exp,int* result)
     switch (exp->ast_type)
     {
         case expression_var :
-            if(exp->symbol->declaration != NULL || exp->symbol->symbol_type==0)
+            if(exp->symbol->declaration != NULL || exp->symbol->symbol_type==0 || exp->symbol->symbol_type==4)
             {
                 //if(exp->symbol->symbol_type==0)
                 //    printf("eh literal type: %d\n",exp->symbol->type);

@@ -229,7 +229,8 @@ Tac* generateCode(Ast *Node)
         break;
     case vec_assignment:
         if(code[0]==NULL) fprintf(stderr,"\nvec_assignment code0 eh NULL");
-        result = tacJoin(code[0],tacCreate(TAC_VEC_ASS,Node->symbol,code[0]==NULL? NULL: code[0]->res,code[1]==NULL? NULL: code[1]->res));
+        if(code[1]==NULL) fprintf(stderr,"\nvec_assignment code1 eh NULL\n");
+        result = tacJoin(code[0],tacJoin(code[1],tacCreate(TAC_VEC_ASS,Node->symbol,code[0]==NULL? NULL: code[0]->res,code[1]==NULL? NULL: code[1]->res)));
         break;
     case var_assignment:
         if(code[0]==NULL) fprintf(stderr,"\nvar_assignment code0 eh NULL");
@@ -263,7 +264,7 @@ Tac* generateCode(Ast *Node)
     case tail_list_expression:
         if(code[0]==NULL) fprintf(stderr,"\ntail_list_expression code0 eh NULL");
         fflush(stderr);
-        result = tacJoin(code[3],tacJoin(code[0],tacCreate(TAC_LIST_EXP,NULL,code[0]==NULL? NULL: code[0]->res,NULL)));
+        result = tacJoin(tacJoin(code[0],tacCreate(TAC_LIST_EXP,NULL,code[0]==NULL? NULL: code[0]->res,NULL)),code[3]);
         break;
     case expression_entrada:
         result = tacCreate(TAC_READ,makeTemp(259),NULL,NULL);
@@ -278,7 +279,8 @@ Tac* generateCode(Ast *Node)
         result = makeFuncDecl(Node->symbol,code[0],code[1]);
         break;
     case retorne_cmd:
-        result = tacCreate(TAC_RET,NULL,NULL,NULL);
+        if(code[0]==NULL) fprintf(stderr,"\nretorne_cmd code0 eh NULL");
+        result = tacJoin(code[0],tacCreate(TAC_RET,code[0]==NULL? NULL: code[0]->res,NULL,NULL));
         break;
         
     default:
@@ -379,25 +381,6 @@ Tac* makeWhile(Tac* code0,Tac* code2)
     return tacJoin(label1Tac,tacJoin(ifjumpTac,label2Tac));
 }
 
-Tac* makePrint(Tac* code0)
-{
-    if (code0 ==NULL)
-        return NULL;
-    
-    for(Tac* temp=code0;temp!=NULL;temp=temp->prev)
-    {
-        if(temp == NULL)
-            {
-                fprintf(stderr,"\n temp eh NULL wtf");
-                getchar();
-            }
-        if(temp->type==TAC_LIST_EXP)
-            temp->type= TAC_PRINT;
-        
-    }
-    return code0;
-}
-
 Tac* tacInverter(Tac* filho,Tac* pai)
 {
     if(filho==NULL)
@@ -409,6 +392,27 @@ Tac* tacInverter(Tac* filho,Tac* pai)
     filho->prev=pai;
     return temp;
 }
+
+Tac* makePrint(Tac* code0)
+{
+    if (code0 ==NULL)
+        return NULL;
+    
+    for(Tac* temp=code0;temp!=NULL;temp=temp->prev)
+    {
+        if(temp == NULL)
+            {
+                fprintf(stderr,"\n temp eh NULL wtf");
+            }
+        if(temp->type==TAC_LIST_EXP)
+            temp->type= TAC_PRINT;
+        
+    }
+    //code0 = tacInverter(code0,NULL);
+    return code0;
+}
+
+
 
 Tac* makeVecDecl(Hash_node* vecSymbol,Tac* code0,Tac* code1)
 {
@@ -442,7 +446,7 @@ Tac* makeFuncDecl(Hash_node* FuncSymbol,Tac* code0,Tac* code1)
 {
 
     Tac* funBegin = tacCreate(TAC_FUNC_BEGIN,FuncSymbol,NULL,NULL);
-    Tac* funEnd = tacCreate(TAC_FUNC_END,NULL,NULL,NULL);
+    Tac* funEnd = tacCreate(TAC_FUNC_END,FuncSymbol,NULL,NULL);
     return tacJoin(code0,tacJoin(funBegin,tacJoin(code1,funEnd)));
 } 
 
@@ -462,7 +466,10 @@ Tac* makeFuncCall(Hash_node* FuncSymbol,Tac* code0)
         return NULL;
     Ast* fun_decl = FuncSymbol->declaration;
     if(fun_decl == NULL || fun_decl->sons[0] ==NULL)
+    {
+        fprintf(stderr,"\t fun_decl eh NULL ou fun_decl->sons[0] eh NULL\n");
         return NULL;
+    }
     
     //remove head
     Ast* fun_iden_list = fun_decl->sons[0]->sons[3];
@@ -476,7 +483,10 @@ Tac* makeFuncCall(Hash_node* FuncSymbol,Tac* code0)
             fun_iden_list=fun_iden_list->sons[3];
         }
     }
-    Tac* fun_call = tacCreate(TAC_FUNC_CALL,makeTemp(),FuncSymbol,NULL);
-    return tacJoin(code0,fun_call);
+    Tac* fun_call = tacCreate(TAC_FUNC_CALL,makeTemp(FuncSymbol->type),FuncSymbol,NULL);
+    Tac* tesTemp =  tacJoin(code0,fun_call);
+    if(tesTemp == NULL)
+        fprintf(stderr,"\t fun_decl tacJoin(code0,fun_call); eh NULL\n");
+    return tesTemp;
 
 }

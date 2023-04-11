@@ -33,7 +33,7 @@ typedef struct function_data
 } Func_data;
 
 Hash_node * hashtable[TABLE_SIZE];
-Hash_node* makeTemp();
+Hash_node* makeTemp(int type);
 Hash_node* makeLabel();
 Hash_node* insert_simbol_tk(char *name);
 unsigned long hash(char *name);
@@ -43,5 +43,6 @@ Hash_node *create_simbol(char *simbol_name, int type, int isLiteral);
 Hash_node* insert_in_next( Hash_node *simbol_root,char *new_simbol, int type, int isLiteral);
 void print_hashtable(void);
 void print_lit_temp_to_ASM(FILE* out);
+void print_string_to_ASM(FILE* out);
 
 #endif

@@ -122,16 +122,28 @@ void print_hash_to_ASM(Hash_node* next,FILE* out)
                 switch ( next->type)
                 {
                 case 258:
+                    fprintf(out,"\t.byte");
                     if( next->value !=NULL)
-                        fprintf(out,"\t.byte\t\'%s\'\n",next->value);
+                    {
+                        if(next->type==258)
+                            fprintf(out,"\t\'%s\'\n",next->value);
+                        if(next->type==259)
+                            fprintf(out,"\t%s\n",next->value);
+                    }
                     else
-                        fprintf(out,"\t.byte\t0\n");
+                        fprintf(out,"\t0\n");
                     break;
                 case 259:
+                    fprintf(out,"\t.long");
                     if( next->value !=NULL)
-                        fprintf(out,"\t.long\t%s\n",next->value);
+                        {
+                            if(next->type==258)
+                                fprintf(out,"\t\'%s\'\n",next->value);
+                            if(next->type==259)
+                                fprintf(out,"\t%s\n",next->value);
+                        }
                     else
-                        fprintf(out,"\t.long\t0\n");
+                        fprintf(out,"\t0\n");
                     break;
                 case 260:
                     if( next->value !=NULL)
@@ -144,6 +156,7 @@ void print_hash_to_ASM(Hash_node* next,FILE* out)
                         fprintf(out,"\t.string\t\"%s\"\n",next->value);
                     else
                         fprintf(out,"\t.string\t\"\"\n");
+                    fprintf(out,"\t.text\n");
                     break;
                 default:
                     break;
@@ -156,7 +169,8 @@ void print_hash_next_ASM(Hash_node* next,FILE* out)
 {
     if(next == NULL)
         return;
-    print_hash_to_ASM(next,out);
+    if(next->type!=276)
+        print_hash_to_ASM(next,out);
     print_hash_next_ASM(next->next,out);
 }
 
@@ -167,8 +181,33 @@ void print_lit_temp_to_ASM(FILE* out)
     {
         if(hashtable[i]!=NULL)
         {
-            print_hash_to_ASM(hashtable[i],out);
+            if(hashtable[i]->type!=276)
+                print_hash_to_ASM(hashtable[i],out);
             print_hash_next_ASM(hashtable[i]->next,out);
+        }
+    }
+    return;
+}
+
+void print_string_next_ASM(Hash_node* next,FILE* out)
+{
+    if(next == NULL)
+        return;
+    if(next->type==276)
+        print_hash_to_ASM(next,out);
+    print_string_next_ASM(next->next,out);
+}
+
+void print_string_to_ASM(FILE* out)
+{
+    int i;
+    for(i=0;i<TABLE_SIZE;i++)
+    {
+        if(hashtable[i]!=NULL)
+        {
+            if(hashtable[i]->type==276)
+                print_hash_to_ASM(hashtable[i],out);
+            print_string_next_ASM(hashtable[i]->next,out);
         }
     }
     return;

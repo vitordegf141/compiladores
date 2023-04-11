@@ -51,6 +51,7 @@ Ast* Create_ast(int ast_type, int type,Hash_node* symbol, Ast* son0, Ast* son1, 
         break;
     case tail_list_ident :
         symbol->symbol_type=parameter_simbol;
+        symbol->type=type;
         break;
     case expression_var :
         break;
@@ -218,7 +219,7 @@ void decode_language_type(int type,FILE* out)
             fprintf(out,"canNotDetermine");
             break;
         default:
-            fprintf(out,"0");
+            fprintf(out,"%d",type);
 
     }
    // KW_CARA = 258,

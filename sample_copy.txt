@@ -2,21 +2,25 @@
 
 cara c='x';
 cara d=100;
-inte a.5='A';
-cara i=1;
+inte a='A';
+inte i=1;
 inte v[10] 'a' 0 0 0 0 0 0 0 0 0 ;
 inte matrix[100]; 
-real f=2.5;
 
 ///
 Este eh um comentario 
 de multiplas 
 linhas
 \\\
+inte incn (inte xa, inte nn )
+  {
+  escreva "xa =" xa " nn=" nn "\n";
+  retorne xa + nn
+  }
 
 inte main ()
   {
-  a.5 = 0;
+  a = 0;
   a = a - i;
   a = 5;
   v[a] = 55;
@@ -24,16 +28,17 @@ inte main ()
   escreva a;
   i = 2;
 
-  escreva "Digite um numero: \n" test;
+  escreva "Digite um numero: \n";
   a = entrada;
   escreva "Digite mais um numero: \n";
-
+  escreva i;
     {
+    i = i + 1;
     i = incn(i 1);
     a = incn(a a);
     } enquanto (i<10);
 
-  escreva "Incrementado algumas vezes a fica " (2+x)*a "\n";
+  escreva "Incrementado algumas vezes a fica " (2+a)*1 "\n";
 
   entaum,
     {
@@ -50,9 +55,6 @@ inte main ()
   {{}}
   }
 
-inte incn (inte x, inte n )
-  {
-  retorne x + n
-  }
+
 
 // fim de arquivo

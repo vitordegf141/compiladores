@@ -12,15 +12,18 @@ void writeASM(Tac* tac,FILE* out)
     switch (tac->type)
     {
     case TAC_PROGRAM:
-        
-        fprintf(out,"\t.data\n");
-        print_lit_temp_to_ASM(out);
         fprintf(out,".section\t.rodata\n");
+        print_string_to_ASM(out);
         fprintf(out,".LC0:\n");
-        fprintf(out,"\t.string	\"%%d\"\n");
+        fprintf(out,"\t.string\t\"%%d\"\n");
+        fprintf(out,"\t.text\n");
         fprintf(out,".LC1:\n");
         fprintf(out,"\t.string	\"%%s\"\n");
-        fprint(out,"\tendbr64\n");
+        fprintf(out,"\t.data\n");
+        print_lit_temp_to_ASM(out);
+        
+        //fprintf(out,"\t.text\n");
+        
         break;
     case TAC_ADD:
         if(tac->res==NULL) fprintf(stderr,"\n TAC_ADD res eh NULL\n");
@@ -86,9 +89,9 @@ void writeASM(Tac* tac,FILE* out)
             else
                 fprintf(out,"\tmovl\t%s(%%rip), %%eax\n", tac->op1->name); //move variable1 value to eax
             if(tac->res->type==KW_CARA)
-                fprintf(out,"\tmovb\t%%al, %s(%%rip)\n", tac->op1->name);
+                fprintf(out,"\tmovb\t%%al, %s(%%rip)\n", tac->res->name);
             else
-                fprintf(out,"\tmovl\t%%eax, %s(%%rip)\n", tac->op1->name); //move variable1 value to eax
+                fprintf(out,"\tmovl\t%%eax, %s(%%rip)\n", tac->res->name); //move variable1 value to eax
         }
         break;
     case TAC_MULT:
@@ -267,7 +270,7 @@ void writeASM(Tac* tac,FILE* out)
         if(tac->res!=NULL && tac->op1!=NULL)
         {
             fprintf(out,"\tmovl\t%s(%%rip), %%eax\n", tac->op1->name); //move variable1 value to eax
-            fprintf(out,"\ttestl\t%%eax, %%eax\n"); //compare variable to variable
+            fprintf(out,"\ttestl\t%%eax, %%eax\n"); //compare variabldie to variable
             fprintf(out,"\tje\t%s\n", tac->res->name);//if equal jump ? gcc makes it this way
         }
         break;
@@ -308,23 +311,31 @@ void writeASM(Tac* tac,FILE* out)
         }
         break;
     case TAC_VEC_ASS:
-        if(tac->res==NULL) fprintf(stderr,"\n%d TAC_VEC_ASS res eh NULL\n",TAC_LABEL);
-        if(tac->op1==NULL) fprintf(stderr,"\n%d TAC_VEC_ASS op1 eh NULL\n",TAC_LABEL);
-        if(tac->op2==NULL) fprintf(stderr,"\n%d TAC_VEC_ASS op2 eh NULL\n",TAC_LABEL);
+        if(tac->res==NULL) fprintf(stderr,"\n TAC_VEC_ASS res eh NULL\n");
+        if(tac->op1==NULL) fprintf(stderr,"\n TAC_VEC_ASS op1 eh NULL\n");
+        if(tac->op2==NULL) fprintf(stderr,"\n TAC_VEC_ASS op2 eh NULL\n");
         if(tac->res!=NULL && tac->op1!=NULL && tac->op2!=NULL)
         {
-            fprintf(out,"\tmovq\t%s(%%rip), %%rdx\n", tac->op1->name); //move index variable adress to rdx
-            fprintf(out,"\tleaq\t0(,%%rdx,4), %%rcx\n"); //move index variable value to rcx
+            fprintf(out,"\tmovl\t%s(%%rip), %%edx\n", tac->op1->name); //move index variable adress to rdx
             fprintf(out,"\tmovl\t%s(%%rip), %%eax\n", tac->op2->name); //move value variable value to eax
+            fprintf(out,"\tmovslq\t%%edx, %%rdx\n"); //move vector adress to rdx
+            fprintf(out,"\tleaq\t0(,%%rdx,4), %%rcx\n"); //move index variable value to rcx
             fprintf(out,"\tleaq\t%s(%%rip), %%rdx\n", tac->res->name); //move vector adress to rdx
             fprintf(out,"\tmovl\t%%eax, (%%rcx,%%rdx)\n");//move value to vector adress plus rcx
         }
         break;
     case TAC_READ:
-        fprintf(out,"TAC_READ");
+        if(tac->res==NULL) fprintf(stderr,"\n TAC_READ res eh NULL\n");
+        if(tac->res!=NULL)
+        {
+            fprintf(out,"\tleaq\t%s(%%rip), %%rsi\n", tac->res->name); //move index variable adress to rsi
+            fprintf(out,"\tleaq\t.LC0(%%rip), %%rdi\n"); //move scanf string adress to rdi
+            fprintf(out,"\tmovl\t$0, %%eax\n"); //move vector adress to rdx
+            fprintf(out,"\tcall\t__isoc99_scanf@PLT\n"); //move index variable value to rcx
+        }
         break;
     case TAC_PRINT:
-        if(tac->op1==NULL) fprintf(stderr,"\t%d TAC_VALUE res eh NULL\n",TAC_LABEL);
+        if(tac->op1==NULL) fprintf(stderr,"\t%d TAC_PRINT res eh NULL\n",TAC_LABEL);
         if(tac->op1 != NULL)
         {
             switch (tac->op1->type)
@@ -360,6 +371,7 @@ void writeASM(Tac* tac,FILE* out)
         if(tac->res==NULL) fprintf(stderr,"\t%d TAC_FUNC_BEGIN res eh NULL\n",TAC_LABEL);
         if(tac->res!=NULL)
         {
+            fprintf(out,"\t.text\n");
             if(strcmp("_tk_main",tac->res->name)==0)
             {
                 fprintf(out,"\t.globl\tmain\n");
@@ -372,41 +384,66 @@ void writeASM(Tac* tac,FILE* out)
                 fprintf(out,"\t.type\t%s, @function\n",tac->res->name);
                 fprintf(out,"%s:\n",tac->res->name);
             }
-            
             fprintf(out,"\t.cfi_startproc\n");
+            fprintf(out,"\tendbr64\n");
             fprintf(out,"\tpushq\t%%rbp\n");
             fprintf(out,"\tmovq\t%%rsp, %%rbp\n");
         }
             
         break;    
     case TAC_FUNC_END:
+        if(tac->res==NULL) fprintf(stderr,"\t TAC_FUNC_END res eh NULL\n");
+        if(tac->res!=NULL)
+        {
+            fprintf(out,"\tpopq\t%%rbp\n");
+            fprintf(out,"\tret\n");
+            fprintf(out,"\t.cfi_endproc\n");
+            if(strcmp("_tk_main",tac->res->name)==0)
+                fprintf(out,"\t.size main\t, .-main\n");
+            else
+                fprintf(out,"\t.size %s\t, .-%s\n",tac->res->name,tac->res->name);
+        }
         
-        fprintf(out,"\tpopq\t%%rbp\n");
-        fprintf(out,"\tret\n");
-        fprintf(out,"\t.cfi_endproc\n");
+       
         break;
     case TAC_FUNC_CALL:
-    if(tac->res==NULL) fprintf(stderr,"\t%d TAC_FUNC_BEGIN res eh NULL\n",TAC_LABEL);
-    if(tac->res!=NULL)
-        fprintf(out,"\tcall	%s\n",tac->res->name);
+    if(tac->res==NULL) fprintf(stderr,"\t TAC_FUNC_CALL res eh NULL\n");
+    if(tac->op1==NULL) fprintf(stderr,"\t TAC_FUNC_CALL op1 eh NULL\n");
+    if(tac->res!=NULL && tac->op1!=NULL){
+        fprintf(out,"\tcall	%s\n",tac->op1->name);
+        fprintf(out,"\tmovl\t%%eax, %s(%%rip)\n", tac->res->name);//move value (eax) to dest
+    }
+        
         break;
     case TAC_VALUE:
-        if(tac->res==NULL) fprintf(stderr,"\t%d TAC_VALUE res eh NULL\n",TAC_LABEL);
+        if(tac->res==NULL) fprintf(stderr,"\t TAC_VALUE res eh NULL\n");
         if(tac->res != NULL)
         {
             switch (tac->res->type)
             {
             case KW_CARA:
+                fprintf(out,"\t.byte");
                 if( tac->op1 !=NULL)
-                    fprintf(out,".byte\t\'%s\'\n",tac->op1->value);
+                {
+                    if(tac->op1->type==KW_CARA)
+                        fprintf(out,"\t\'%s\'\n",tac->op1->value);
+                    if(tac->op1->type==KW_INTE)
+                        fprintf(out,"\t%s\n",tac->op1->value);
+                }   
                 else
-                    fprintf(out,".byte\t0\n");
+                    fprintf(out,"\t0\n");
                 break;
             case KW_INTE:
+                fprintf(out,"\t.long");
                 if( tac->op1 !=NULL)
-                    fprintf(out,"\t.long\t%s\n",tac->op1->value);
+                {
+                    if(tac->op1->type==KW_CARA)
+                        fprintf(out,"\t\'%s\'\n",tac->op1->value);
+                    if(tac->op1->type==KW_INTE)
+                        fprintf(out,"\t%s\n",tac->op1->value);
+                } 
                 else
-                    fprintf(out,"\t.long\t0\n");
+                    fprintf(out,"\t0\n");
                 break;
             case KW_REAL:
                 if( tac->op1 !=NULL)
@@ -419,6 +456,7 @@ void writeASM(Tac* tac,FILE* out)
                     fprintf(out,"\t.string\t\"%s\"\n",tac->op1->value);
                 else
                     fprintf(out,"\t.string\t\"\"\n");
+                fprintf(out,"\t.text\n");
                 break;
             default:
                 break;
@@ -426,8 +464,28 @@ void writeASM(Tac* tac,FILE* out)
         }
         break;
     case TAC_RET:
-        fprintf(out,"\tpopq	%%rbp\n");
-        fprintf(out,"\tret\n");
+        if(tac->res==NULL) fprintf(stderr,"\t TAC_RET res eh NULL\n");
+
+
+        switch (tac->res->type)
+            {
+            case KW_CARA:
+                fprintf(out,"\tmovzbl	%s(%%rip), %%eax\n",tac->res->name); 
+                break;
+            case KW_INTE:
+                fprintf(out,"\tmovl	%s(%%rip), %%eax\n",tac->res->name);  
+                break;
+            case KW_REAL:
+                fprintf(out,"\tmovl	%s(%%rip), %%eax\n",tac->res->name);  
+                break;
+            case LIT_STRING:
+                fprintf(out,"\tmovl	%s(%%rip), %%eax\n",tac->res->name);  
+                break;
+            default:
+                break;
+            }
+            fprintf(out,"\tpopq	%%rbp\n");
+            fprintf(out,"\tret\n");
         break;
 
     default:

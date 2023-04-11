@@ -1,8 +1,14 @@
 inte vect[2] 1 2;
-
+inte inteiro = 1;
+cara fkkkk()
+{
+    retorne 'a'
+}
 cara main(){
     escreva "asdasd";
-    vect[1]=1222;
-    retorne 1
+    vect[1]=fkkkk();
+    escreva "\n" vect[1];
+    inteiro=444;
+    escreva "\n " inteiro
     }
     
