@@ -1,8 +1,8 @@
 sftp -oHostKeyAlgorithms=+ssh-rsa vgfraga@html.inf.ufrgs.br
 cd 
 
-tar cvzf etapa4.tgz .
-put  etapa4.tgz
+tar cvzf etapa5.tgz .
+put  etapa5.tgz
 
 "\n"    
 
